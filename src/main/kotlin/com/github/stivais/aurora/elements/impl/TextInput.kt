@@ -72,9 +72,11 @@ class TextInput(
         // anything for when characters, for checking for stuff like copy paste:
         // check with Modifiers (not implemented tho)
         // dont make a new function just to only use inside here
-        registerEvent(Keyboard.CharTyped()) { (char) ->
-            if (caret > text.length) caret = text.length
-            insert(char.toString())
+        registerEvent(Keyboard.CharTyped()) { (char, mods) ->
+            println("$char ${mods.hasControl}")
+
+//            if (caret > text.length) caret = text.length
+//            insert(char.toString())
             false
         }
 

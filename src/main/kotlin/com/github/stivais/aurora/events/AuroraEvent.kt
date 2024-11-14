@@ -1,7 +1,7 @@
 package com.github.stivais.aurora.events
 
 import com.github.stivais.aurora.input.Keys
-import com.github.stivais.aurora.input.Modifiers
+import com.github.stivais.aurora.input.Modifier
 
 /**
  * # AuroraEvent
@@ -110,9 +110,11 @@ sealed interface Lifetime : AuroraEvent.NonSpecific {
  */
 sealed interface Keyboard : AuroraEvent.NonSpecific {
 
-    data class CharTyped(val key: Char = ' ', val mods: Modifiers = Modifiers(0)) : Keyboard
+    data class CharTyped(val key: Char = ' ', val mods: Modifier = Modifier(0)) : Keyboard
 
-    data class KeyTyped(val key: Keys = Keys.UNKNOWN, val mods: Modifiers = Modifiers(0)) : Keyboard
+    data class KeyTyped(val key: Keys = Keys.UNKNOWN, val mods: Modifier = Modifier(0)) : Keyboard
+
+    data class CodeTyped(val code: Int = 0, val mods: Modifier = Modifier(0)) : Keyboard
 }
 
 /**

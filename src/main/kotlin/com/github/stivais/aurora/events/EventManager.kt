@@ -2,6 +2,8 @@ package com.github.stivais.aurora.events
 
 import com.github.stivais.aurora.AuroraUI
 import com.github.stivais.aurora.elements.Element
+import com.github.stivais.aurora.input.Keys
+import com.github.stivais.aurora.input.Modifier
 import com.github.stivais.aurora.utils.loop
 import com.github.stivais.aurora.utils.reverseLoop
 import kotlin.math.sign
@@ -11,6 +13,8 @@ class EventManager(private val ui: AuroraUI) {
     var mouseX: Float = 0f
     var mouseY: Float = 0f
     var mouseDown: Boolean = false
+
+    var modifier = Modifier(0)
 
     private var hoveredElement: Element? = null
 
@@ -55,9 +59,24 @@ class EventManager(private val ui: AuroraUI) {
 
     fun onKeyTyped(char: Char): Boolean {
         if (focused != null) {
-            focused!!.acceptFocused(Keyboard.CharTyped(char))
+            focused!!.acceptFocused(Keyboard.CharTyped(char, modifier))
         }
         return false
+    }
+
+    fun onKeyTyped(key: Keys): Boolean {
+        if (focused != null) {
+            focused!!.acceptFocused(Keyboard.KeyTyped(key))
+        }
+        return false
+    }
+
+    fun addModifier(mods: Byte) {
+        modifier = Modifier((modifier.value.toInt() or mods.toInt()).toByte())
+    }
+
+    fun removeModifier(mods: Byte) {
+        modifier = Modifier((modifier.value.toInt() and mods.toInt().inv()).toByte())
     }
 
 

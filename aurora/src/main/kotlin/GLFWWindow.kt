@@ -1,7 +1,6 @@
 package com.github.stivais
 
 import com.github.stivais.aurora.AuroraUI
-import com.github.stivais.aurora.utils.log
 import org.lwjgl.glfw.Callbacks
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWErrorCallback
@@ -72,10 +71,28 @@ class GLFWWindow(
 
         glfwSetCharCallback(handle) { _, char ->
             ui.eventManager.onKeyTyped(char.toChar())
-//            println("char ${char.toChar()} char code $char")
         }
 
         glfwSetKeyCallback(handle) { _, key, _, action, mods ->
+            if (key < 255 && mods > 1 && action == GLFW_PRESS) {
+                ui.eventManager.onKeyTyped((key + 32).toChar())
+            }
+
+            val modifier: Byte = when (key) {
+                GLFW_KEY_LEFT_SHIFT -> 0b00000001
+                GLFW_KEY_RIGHT_SHIFT -> 0b00000010
+                GLFW_KEY_LEFT_CONTROL -> 0b00000100
+                GLFW_KEY_RIGHT_CONTROL-> 0b00001000
+                GLFW_KEY_LEFT_ALT -> 0b00001000
+                GLFW_KEY_RIGHT_ALT-> 0b00100000
+                else -> return@glfwSetKeyCallback
+            }
+            if (action == GLFW_PRESS) {
+                ui.eventManager.addModifier(modifier)
+            } else if (action == GLFW_RELEASE) {
+                ui.eventManager.removeModifier(modifier)
+            }
+
 //            println(key)
 //            GLFW_KEY_F10
         }
