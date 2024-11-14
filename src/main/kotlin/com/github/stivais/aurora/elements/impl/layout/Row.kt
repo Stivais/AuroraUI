@@ -1,22 +1,31 @@
 package com.github.stivais.aurora.elements.impl.layout
 
-import com.github.stivais.aurora.color.Color
 import com.github.stivais.aurora.constraints.Constraint
 import com.github.stivais.aurora.constraints.Constraints
 import com.github.stivais.aurora.constraints.impl.measurements.Undefined
+import com.github.stivais.aurora.constraints.impl.size.Bounding
 import com.github.stivais.aurora.constraints.impl.size.Copying
 import com.github.stivais.aurora.dsl.size
-import com.github.stivais.aurora.elements.BlankElement
 import com.github.stivais.aurora.elements.DSL
-import com.github.stivais.aurora.elements.Element
 import com.github.stivais.aurora.elements.ElementScope
-import com.github.stivais.aurora.elements.impl.Group
+import com.github.stivais.aurora.elements.Layout
 import com.github.stivais.aurora.utils.loop
 
+/**
+ * # Row
+ *
+ * This [element][com.github.stivais.aurora.elements.Element], which implements [Layout],
+ * is used to place elements, with undefined positions, horizontally on the screen.
+ *
+ * If you want a layout to place elements vertically use [Column].
+ *
+ * @see Layout
+ * @see Column
+ */
 class Row(
     constraints: Constraints,
-    private val padding: Constraint.Size? = null
-) : BlankElement(constraints) {
+    padding: Constraint.Size? = null
+) : Layout(constraints, padding) {
 
     override fun prePosition() {
         val padding = padding?.calculateSize(this, horizontal = true) ?: 0f
@@ -29,17 +38,17 @@ class Row(
         }
     }
 
-    override fun getDefaultPositions() = Pair(Undefined, Undefined)
-
     companion object {
+        /**
+         * Creates a column, with a width being specified and height of [Copying].
+         *
+         * Acts as a section, to place elements in.
+         */
         @DSL
-        fun ElementScope<Row>.divider(size: Constraint.Size) {
-            element.addElement(Divider(width = size))
-        }
-
-        @DSL
-        fun ElementScope<Row>.section(size: Constraint.Size, block: ElementScope<Group>.() -> Unit) {
-            Group(size(w = Copying, h = size)).scope(block)
-        }
+        fun ElementScope<Column>.sectionColumn(
+            size: Constraint.Size = Bounding,
+            padding: Constraint.Size? = null,
+            block: ElementScope<Column>.() -> Unit
+        ) = Column(size(w = size, h = Copying), padding).scope(block)
     }
 }

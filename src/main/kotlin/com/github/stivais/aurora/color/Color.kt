@@ -50,7 +50,7 @@ interface Color {
      *
      * It only updates the [rgba][Color.rgba] value if any of the hue, saturation or brightness values have been changed.
      */
-    open class HSB(hue: Float, saturation: Float, brightness: Float, alpha: Float = 1f) : Color {
+    class HSB(hue: Float, saturation: Float, brightness: Float, alpha: Float = 1f) : Color {
 
         constructor(hsb: FloatArray, alpha: Float = 1f) : this(hsb[0], hsb[1], hsb[2], alpha)
 
@@ -103,9 +103,6 @@ interface Color {
                     alpha = value.alpha / 255f
                 }
             }
-
-
-
 
         override fun equals(other: Any?): Boolean {
             return other is Color && other.rgba == this.rgba

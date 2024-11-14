@@ -91,5 +91,9 @@ class ElementScope<E : Element>(val element: E) {
     }
 }
 
+/**
+ * Simple annotation to be able to
+ * customize color (inside your IDE) of functions which use it.
+ */
 @DslMarker
 annotation class DSL

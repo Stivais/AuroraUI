@@ -2,7 +2,6 @@ package com.github.stivais.aurora.events
 
 import com.github.stivais.aurora.AuroraUI
 import com.github.stivais.aurora.elements.Element
-import com.github.stivais.aurora.utils.log
 import com.github.stivais.aurora.utils.loop
 import com.github.stivais.aurora.utils.reverseLoop
 import kotlin.math.sign

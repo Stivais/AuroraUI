@@ -33,6 +33,9 @@ open class Block(
         @JvmField
         val EMPTY_RADIUS = Radii(0f, 0f, 0f, 0f)
 
+        /**
+         * Adds an outline to a [Block]
+         */
         @DSL
         fun ElementScope<Block>.outline(color: Color, thickness: Constraint.Measurement): ElementScope<Block> {
             element.outline = color
@@ -41,6 +44,11 @@ open class Block(
         }
     }
 
+    /**
+     * # Block.Gradient
+     *
+     * Copy of [Block], with a gradient between 2 colors.
+     */
     class Gradient(
         constraints: Constraints,
         color1: Color,

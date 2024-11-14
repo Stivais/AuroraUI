@@ -9,6 +9,14 @@ import com.github.stivais.aurora.elements.DSL
 import com.github.stivais.aurora.elements.Element
 import com.github.stivais.aurora.elements.ElementScope
 
+/**
+ * # Scrollable
+ *
+ * This element implements scrolling.
+ *
+ * If height is [Bounding], you will be able to scroll until the size is 0,
+ * otherwise it will scroll until there isn't more elements to show.
+ */
 class Scrollable(
     constraints: Constraints
 ) : BlankElement(constraints) {
@@ -51,13 +59,23 @@ class Scrollable(
         element.y =  element.internalY + newY
     }
 
-    fun scroll(amount: Float) {
+    /**
+     * Starts an animation to scroll by an amount
+     */
+    fun scroll(
+        amount: Float,
+        duration: Float = 0.15.seconds,
+        style: Animation.Style = Animation.Style.EaseOutQuint
+    ) {
         fromY = offsetY
         toY = offsetY + amount
-        animationY = Animation(0.15.seconds, Animation.Style.EaseOutQuint)
+        animationY = Animation(duration, style)
     }
 
     companion object {
+        /**
+         * Invokes [Scrollable.scroll] and redraws the element.
+         */
         @DSL
         fun ElementScope<Scrollable>.scroll(amount: Float) {
             element.scroll(amount)

@@ -6,16 +6,26 @@ import com.github.stivais.aurora.constraints.impl.measurements.Undefined
 import com.github.stivais.aurora.constraints.impl.size.Bounding
 import com.github.stivais.aurora.constraints.impl.size.Copying
 import com.github.stivais.aurora.dsl.size
-import com.github.stivais.aurora.elements.BlankElement
 import com.github.stivais.aurora.elements.DSL
 import com.github.stivais.aurora.elements.ElementScope
-import com.github.stivais.aurora.elements.impl.Group
+import com.github.stivais.aurora.elements.Layout
 import com.github.stivais.aurora.utils.loop
 
+/**
+ * # Column
+ *
+ * This [element][com.github.stivais.aurora.elements.Element], which implements [Layout],
+ * is used to place elements, with undefined positions, vertically on the screen.
+ *
+ * If you want a layout to place elements horizontally use [Row].
+ *
+ * @see Layout
+ * @see Row
+ */
 class Column(
     constraints: Constraints,
-    private val padding: Constraint.Size? = null,
-) : BlankElement(constraints) {
+    padding: Constraint.Size? = null,
+) : Layout(constraints, padding) {
 
     override fun prePosition() {
         val paddingY = padding?.calculateSize(this, horizontal = false) ?: 0f
@@ -28,21 +38,12 @@ class Column(
         }
     }
 
-    override fun getDefaultPositions() = Pair(Undefined, Undefined)
-
     companion object {
-        @DSL
-        fun ElementScope<Column>.divider(size: Constraint.Size) {
-            element.addElement(Divider(height = size))
-        }
-
-        @DSL
-        fun ElementScope<Column>.section(
-            size: Constraint.Size,
-            block: ElementScope<Group>.() -> Unit
-        ) = Group(size(w = Copying, h = size)).scope(block)
-
-
+        /**
+         * Creates a row, with a width of [Copying] and height being specified.
+         *
+         * Acts as a section, to place elements in.
+         */
         @DSL
         fun ElementScope<Column>.sectionRow(
             size: Constraint.Size = Bounding,

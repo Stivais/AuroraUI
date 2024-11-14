@@ -2,15 +2,13 @@ package com.github.stivais
 
 import com.github.stivais.aurora.color.Color
 import com.github.stivais.aurora.constraints.impl.measurements.Pixel
-import com.github.stivais.aurora.constraints.impl.measurements.Undefined
 import com.github.stivais.aurora.constraints.impl.positions.Center
 import com.github.stivais.aurora.constraints.impl.size.AspectRatio
-import com.github.stivais.aurora.constraints.impl.size.Bounding
 import com.github.stivais.aurora.constraints.impl.size.Fill
 import com.github.stivais.aurora.dsl.*
 import com.github.stivais.aurora.elements.ElementScope
+import com.github.stivais.aurora.elements.Layout.Companion.section
 import com.github.stivais.aurora.elements.impl.Block.Companion.outline
-import com.github.stivais.aurora.elements.impl.layout.Column.Companion.section
 import com.github.stivais.aurora.elements.impl.layout.Column.Companion.sectionRow
 import com.github.stivais.aurora.renderer.data.Gradient
 import com.github.stivais.aurora.renderer.data.Image

@@ -11,11 +11,22 @@ import com.github.stivais.aurora.input.Modifiers
  * @see Mouse
  */
 interface AuroraEvent {
+
+    /**
+     * # AuroraEvent.NonSpecific
+     *
+     * This is an extension for [AuroraEvent],
+     * which indicates that only the type of event needs to match when being posted.
+     *
+     * @see com.github.stivais.aurora.elements.Element.registerEvent
+     */
     interface NonSpecific : AuroraEvent
 }
 
 /**
- * All events for mouse inputs
+ * # Mouse *Events*
+ *
+ * All events for mouse inputs.
  *
  * These events include:
  * [Mouse.Clicked],
@@ -28,44 +39,36 @@ interface AuroraEvent {
 sealed interface Mouse : AuroraEvent {
 
     /**
-     * Gets posted when the mouse is clicked
+     * Gets posted when the mouse is clicked.
      */
     data class Clicked(val button: Int): Mouse
 
     /**
-     * Gets posted when the mouse is released
+     * Gets posted when the mouse is released.
      */
     data class Released(val button: Int): Mouse
 
     /**
-     * Gets posted when the mouse is scrolled
+     * Gets posted when the mouse is scrolled.
+     *
+     * Note: [amount] should always be between -1f to 1f
      */
-    class Scrolled(val amount: Float): Mouse {
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            return other is Scrolled
-        }
-
-        override fun hashCode(): Int = 29791 // 31^3
-
-        operator fun component1() = amount
-    }
+    data class Scrolled(val amount: Float): Mouse, AuroraEvent.NonSpecific
 
     /**
-     * Gets posted when the mouse moves
+     * Gets posted when the mouse moves.
      */
     data object Moved : Mouse
 
     /**
-     * Gets posted when the mouse enters the element
+     * Gets posted when the mouse enters the element.
      *
      * @see com.github.stivais.aurora.elements.Element.hovered
      */
     data object Entered : Mouse
 
     /**
-     * Gets posted when the mouse enters the element
+     * Gets posted when the mouse enters the element.
      *
      * @see com.github.stivais.aurora.elements.Element.hovered
      */
@@ -73,39 +76,69 @@ sealed interface Mouse : AuroraEvent {
 }
 
 /**
- * # Lifetime
+ * # Lifetime *Events*
  *
- * Events, which get posted based on the lifetime of an element
+ * Events, which get posted based on the lifetime of an element.
+ *
+ * Implements [AuroraEvent.NonSpecific].
  */
-sealed interface Lifetime : AuroraEvent {
+sealed interface Lifetime : AuroraEvent.NonSpecific {
 
     /**
-     * Gets posted when element is initialized
+     * Gets posted when element is initialized.
      *
      * @see com.github.stivais.aurora.elements.Element.initialize
      */
     data object Initialized : Lifetime
 
     /**
-     * Gets posted when element is uninitalized
+     * Gets posted when element is uninitialized.
      */
     data object Uninitialized : Lifetime
 }
 
+/**
+ * # Keyboard *Events*
+ *
+ * Events for keyboard inputs.
+ *
+ * Implements [AuroraEvent.NonSpecific].
+ *
+ * These events include:
+ * [Keyboard.CharTyped],
+ * [Keyboard.KeyTyped],
+ */
 sealed interface Keyboard : AuroraEvent.NonSpecific {
 
-    class CharTyped(private val key: Char = ' ', val mods: Modifiers = Modifiers(0)) : Keyboard {
-        operator fun component1() = key
-    }
+    data class CharTyped(val key: Char = ' ', val mods: Modifiers = Modifiers(0)) : Keyboard
 
-    class KeyTyped(private val key: Keys = Keys.UNKNOWN, val mods: Modifiers = Modifiers(0)) : Keyboard {
-        operator fun component1() = key
-    }
+    data class KeyTyped(val key: Keys = Keys.UNKNOWN, val mods: Modifiers = Modifiers(0)) : Keyboard
 }
 
+/**
+ * # Focused *Events*
+ *
+ * Events for when an element is focused or not.
+ *
+ * Implements [AuroraEvent.NonSpecific].
+ *
+ * These events include:
+ * [Focused.Gained],
+ * [Focused.Lost],
+ */
 sealed interface Focused : AuroraEvent.NonSpecific {
 
+    /**
+     * Gets posted when an element is focused.
+     *
+     * @see EventManager.focused
+     */
     data object Gained : Focused
 
+    /**
+     * Gets posted when an element is unfocused.
+     *
+     * @see EventManager.focused
+     */
     data object Lost : Focused
 }

@@ -4,7 +4,9 @@ import com.github.stivais.aurora.color.Color
 import com.github.stivais.aurora.constraints.Constraint
 import com.github.stivais.aurora.constraints.Positions
 import com.github.stivais.aurora.constraints.impl.measurements.Undefined
+import com.github.stivais.aurora.elements.DSL
 import com.github.stivais.aurora.elements.Element
+import com.github.stivais.aurora.elements.ElementScope
 import com.github.stivais.aurora.renderer.data.Font
 
 open class Text(
@@ -38,5 +40,12 @@ open class Text(
 
     override fun draw() {
         renderer.text(text, x, y, height, color!!.rgba, font)
+    }
+
+    companion object {
+        @DSL
+        var ElementScope<Text>.string
+            get() = element.text
+            set(value) { element.text = value }
     }
 }

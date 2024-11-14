@@ -6,8 +6,9 @@ import com.github.stivais.aurora.constraints.Constraint
 import com.github.stivais.aurora.constraints.Constraints
 import com.github.stivais.aurora.constraints.impl.measurements.Undefined
 import com.github.stivais.aurora.constraints.impl.positions.Center
-import com.github.stivais.aurora.events.*
-import com.github.stivais.aurora.utils.log
+import com.github.stivais.aurora.events.AuroraEvent
+import com.github.stivais.aurora.events.Lifetime
+import com.github.stivais.aurora.events.Mouse
 import com.github.stivais.aurora.utils.loop
 
 /**
@@ -43,7 +44,9 @@ abstract class Element(
     var children: ArrayList<Element>? = null
 
     /**
-     * Event handler for this element
+     * Event handler for this element.
+     *
+     * The key *should* be either [AuroraEvent] or [Class] representing an event.
      *
      * @see accept
      */
@@ -265,12 +268,21 @@ abstract class Element(
      */
     fun accept(event: AuroraEvent): Boolean {
         if (events != null) {
-            val action = events!![event] ?: return false
+            // if i ever make mouse clicks focusable, find a way to separate them while using same class
+            val action = when (event) {
+                is AuroraEvent.NonSpecific -> events!![event::class.java] ?: events!![event]
+                else -> events!![event]
+            } ?: return false
             action.loop { if (it(event)) return true }
         }
         return false
     }
 
+    /**
+     * Checks if this element has events matching the class, if so it will loop through all functions for it.
+     *
+     * @return true if event should be consumed.
+     */
     fun acceptFocused(event: AuroraEvent): Boolean {
         if (events != null) {
             val action = events!![event::class.java] ?: return false
@@ -282,6 +294,8 @@ abstract class Element(
     /**
      * Registers an event to this element.
      *
+     * If the event inherits [AuroraEvent.NonSpecific], it's [Class] will be added to [events]
+     *
      * If the event isn't a lifetime event, it will mark [acceptsInput] as true.
      */
     @Suppress("UNCHECKED_CAST")
@@ -290,11 +304,11 @@ abstract class Element(
         if (events == null) {
             events = hashMapOf()
         }
-        val key: Any = if (event is Keyboard || event is Focused) event::class.java else event
+        val key: Any = if (event is AuroraEvent.NonSpecific) event::class.java else event
         events!!.getOrPut(key) { arrayListOf() }.add(block as (AuroraEvent) -> Boolean)
     }
 
-    // constraint util
+    // constraint util, maybe somewhere el;se
     fun getSize(horizontal: Boolean) = (if (horizontal) width else height)
     fun getPosition(horizontal: Boolean) = if (horizontal) internalX else internalY
 

@@ -3,14 +3,13 @@ package com.github.stivais.aurora.elements.impl.layout
 import com.github.stivais.aurora.constraints.Constraint
 import com.github.stivais.aurora.constraints.Constraints
 import com.github.stivais.aurora.constraints.impl.measurements.Undefined
-import com.github.stivais.aurora.elements.BlankElement
-import com.github.stivais.aurora.elements.Element
+import com.github.stivais.aurora.elements.Layout
 import com.github.stivais.aurora.utils.loop
 
 class Grid(
     constraints: Constraints,
-    private val padding: Constraint.Size? = null
-) : BlankElement(constraints) {
+    padding: Constraint.Size? = null
+) : Layout(constraints, padding) {
 
     override fun prePosition() {
         val padding = padding?.calculateSize(this, horizontal = true) ?: 0f
@@ -29,6 +28,4 @@ class Grid(
             }
         }
     }
-
-    override fun getDefaultPositions() = Pair(Undefined, Undefined)
 }
