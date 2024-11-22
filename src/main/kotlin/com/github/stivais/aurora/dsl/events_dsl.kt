@@ -96,17 +96,27 @@ inline fun ElementScope<*>.onMouseMove(crossinline block: (Mouse.Moved) -> Unit)
  *
  * Returns false by default.
  */
-inline fun ElementScope<*>.onMouseEnter(crossinline block: (Mouse.Entered) -> Unit) {
-    element.registerEvent(Mouse.Entered) { block(it); false }
+inline fun ElementScope<*>.onMouseEnter(crossinline block: () -> Unit) {
+    element.registerEvent(Mouse.Entered) { block(); false }
 }
 
 /**
- * Registers [Mouse.Entered] event.
+ * Registers [Mouse.Exited] event.
  *
  * Returns false by default.
  */
-inline fun ElementScope<*>.onMouseExit(crossinline block: (Mouse.Exited) -> Unit) {
-    element.registerEvent(Mouse.Exited) { block(it); false }
+inline fun ElementScope<*>.onMouseExit(crossinline block: () -> Unit) {
+    element.registerEvent(Mouse.Exited) { block(); false }
+}
+
+/**
+ * Registers both [Mouse.Entered] and [Mouse.Exited] events, using the same function.
+ *
+ * Returns false by default.
+ */
+inline fun ElementScope<*>.onMouseEnterExit(crossinline block: () -> Unit) {
+    element.registerEvent(Mouse.Entered) { block(); false }
+    element.registerEvent(Mouse.Exited) { block(); false }
 }
 
 //-----------------//

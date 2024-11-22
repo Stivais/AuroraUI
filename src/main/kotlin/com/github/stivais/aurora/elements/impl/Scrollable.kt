@@ -2,6 +2,7 @@ package com.github.stivais.aurora.elements.impl
 
 import com.github.stivais.aurora.animations.Animation
 import com.github.stivais.aurora.constraints.Constraints
+import com.github.stivais.aurora.constraints.impl.measurements.Pixel
 import com.github.stivais.aurora.constraints.impl.size.Bounding
 import com.github.stivais.aurora.dsl.seconds
 import com.github.stivais.aurora.elements.BlankElement
@@ -52,12 +53,16 @@ class Scrollable(
         }
     }
 
+    // idk how to feel about this
     override fun position(element: Element, newX: Float, newY: Float) {
         element.internalX = element.constraints.x.calculatePos(element, true)
         element.internalY = element.constraints.y.calculatePos(element, false) - offsetY
         element.x =  element.internalX + newX
         element.y =  element.internalY + newY
     }
+
+
+    override fun getDefaultPositions() = Pixel.ZERO to Pixel.ZERO
 
     /**
      * Starts an animation to scroll by an amount
@@ -75,6 +80,8 @@ class Scrollable(
     companion object {
         /**
          * Invokes [Scrollable.scroll] and redraws the element.
+         *
+         * Also tells the element to [redraw]
          */
         @DSL
         fun ElementScope<Scrollable>.scroll(amount: Float) {

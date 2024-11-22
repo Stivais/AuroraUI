@@ -1,8 +1,13 @@
 package com.github.stivais.aurora.dsl
 
+import com.github.stivais.aurora.animations.Animation
+import com.github.stivais.aurora.color.Color
 import com.github.stivais.aurora.constraints.impl.measurements.Pixel
 import com.github.stivais.aurora.elements.Element
 import com.github.stivais.aurora.elements.ElementScope
+import com.github.stivais.aurora.elements.impl.Block
+import com.github.stivais.aurora.utils.color
+import com.github.stivais.aurora.utils.multiply
 
 /**
  * Gets ran when dragging down on an element.
@@ -70,4 +75,22 @@ fun ElementScope<*>.draggable(
         py.pixels = newY
         element.redraw()
     }
+}
+
+/**
+ * Extension for [Block],
+ * where the color gets darkened whenever the mouse is hovering over the element.
+ *
+ * It will mutate the color to a [Color.Animated],
+ * where first color is the original color, and the second is a darker version.
+ */
+fun ElementScope<Block>.hoverEffect(
+    factor: Float,
+    duration: Float = 0.2.seconds,
+    style: Animation.Style = Animation.Style.EaseOutQuad
+) {
+    val before = element.color!!
+    val hover = Color.Animated(from = before, to = color { before.rgba.multiply(factor = factor) })
+    element.color = hover
+    onMouseEnterExit { hover.animate(duration, style) }
 }

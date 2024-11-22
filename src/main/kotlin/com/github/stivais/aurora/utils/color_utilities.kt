@@ -1,4 +1,4 @@
-@file:Suppress("UNUSED")
+@file:Suppress("unused", "nothing_to_inline")
 
 package com.github.stivais.aurora.utils
 
@@ -32,7 +32,7 @@ inline val Color.alpha
 /**
  * Compacts 4 integers representing red, green, blue and alpha into a single integer
  */
-fun getRGBA(red: Int, green: Int, blue: Int, alpha: Int): Int {
+inline fun getRGBA(red: Int, green: Int, blue: Int, alpha: Int): Int {
     return ((alpha shl 24) and 0xFF000000.toInt()) or ((red shl 16) and 0x00FF0000) or ((green shl 8) and 0x0000FF00) or (blue and 0x000000FF)
 }
 
@@ -40,7 +40,7 @@ fun getRGBA(red: Int, green: Int, blue: Int, alpha: Int): Int {
 /**
  * Compacts 3 integers representing red, green, blue and an alpha value into a single integer
  */
-fun getRGBA(red: Int, green: Int, blue: Int, alpha: Float): Int {
+inline fun getRGBA(red: Int, green: Int, blue: Int, alpha: Float): Int {
     return (((alpha * 255).roundToInt() shl 24) and 0xFF000000.toInt()) or ((red shl 16) and 0x00FF0000) or ((green shl 8) and 0x0000FF00) or (blue and 0x000000FF)
 }
 
@@ -52,7 +52,7 @@ fun getRGBA(red: Int, green: Int, blue: Int, alpha: Float): Int {
 fun hexToRGBA(hex: String): Int {
     return when (hex.length) {
         7 -> (255 shl 24) or hex.substring(1, 7).toInt(16)
-        9 -> (hex.substring(7, 9).toInt(16) shl 24) or hex.substring(1, 7).toInt(16)
+        9 -> (hex.substring(7, 9).toInt(16) shl 24) or hex.substring(1, 7).toInt(16) // needs 2 substrings because it is unable to correctly parse with 1
         else -> throw IllegalArgumentException("Invalid hex color format: $hex. Use #RRGGBB or #RRGGBBAA.")
     }
 }
@@ -67,12 +67,37 @@ fun Color.toHexString(): String {
 /**
  * Copies a color with the new alpha value provided.
  */
-fun Color.withAlpha(alpha: Float): Color = Color.RGB(red, green, blue, alpha)
+inline fun Color.withAlpha(alpha: Float): Color = Color.RGB(red, green, blue, alpha)
 
 /**
  * Copies a color with the new alpha value provided.
  */
-fun Color.withAlpha(alpha: Int): Color = Color.RGB(red, green, blue, alpha / 255f)
+inline fun Color.withAlpha(alpha: Int): Color = Color.RGB(red, green, blue, alpha / 255f)
+
+/**
+ * Copies a color, multiplying its alpha value by a certain factor
+ */
+inline fun Color.multiplyAlpha(factor: Float): Color = withAlpha((alpha * factor).roundToInt())
+
+/**
+ * Multiples an integer representing a hexadecimal color.
+ */
+inline fun Int.multiply(
+    r: Float = 1f,
+    g: Float = 1f,
+    b: Float = 1f,
+    a: Float = 1f
+) = getRGBA(
+    (red * r).roundToInt().coerceIn(0, 255),
+    (green * g).roundToInt().coerceIn(0, 255),
+    (blue * b).roundToInt().coerceIn(0, 255),
+    (alpha * a).roundToInt().coerceIn(0, 255)
+)
+
+/**
+ * Multiples red, blue and green from a hexadecimal color by a factor.
+ */
+inline fun Int.multiply(factor: Float = 1f) = multiply(factor, factor, factor, 1f)
 
 /**
  * Converts any [Color] into a [Color.HSB]
