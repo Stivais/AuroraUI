@@ -27,6 +27,18 @@ inline fun <E> ArrayList<E>.reverseLoop(block: (E) -> Unit) {
 }
 
 /**
+ * Faster version of [MutableList.removeIf], which avoids allocating iterator objects
+ */
+inline fun <E> ArrayList<E>.loopRemoveIf(block: (E) -> Boolean) {
+    if (this.size == 0) return
+    for (i in this.size - 1 downTo 0) {
+        if (block(this[i])) {
+            removeAt(i)
+        }
+    }
+}
+
+/**
  * Sets up a connection and retrieves an input stream from a provided url.
  */
 fun setupConnection(

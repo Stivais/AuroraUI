@@ -21,4 +21,9 @@ open class Constraints(
      * Utility function to return either width constraint or height constraint based on [horizontal]
      */
     fun getSize(horizontal: Boolean) = if (horizontal) width else height
+
+    /**
+     * Utility function to return if either width or height constraints [relies on children][Constraint.reliesOnChildren]
+     */
+    fun sizeReliesOnChildren() = width.reliesOnChildren() || height.reliesOnChildren()
 }

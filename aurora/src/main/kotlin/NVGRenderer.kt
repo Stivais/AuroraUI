@@ -9,14 +9,12 @@ import com.github.stivais.aurora.utils.blue
 import com.github.stivais.aurora.utils.green
 import com.github.stivais.aurora.utils.red
 import org.lwjgl.nanovg.NVGColor
-import org.lwjgl.nanovg.NVGLUFramebuffer
 import org.lwjgl.nanovg.NVGPaint
 import org.lwjgl.nanovg.NanoSVG
 import org.lwjgl.nanovg.NanoSVG.nsvgParse
 import org.lwjgl.nanovg.NanoVG.*
 import org.lwjgl.nanovg.NanoVGGL3.NVG_ANTIALIAS
 import org.lwjgl.nanovg.NanoVGGL3.nvgCreate
-import org.lwjgl.opengl.GL11.*
 import org.lwjgl.stb.STBImage
 import org.lwjgl.system.MemoryUtil
 

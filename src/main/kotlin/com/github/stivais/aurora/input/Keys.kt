@@ -1,5 +1,6 @@
-package com.github.stivais.aurora.input
+@file:Suppress("unused")
 
+package com.github.stivais.aurora.input
 
 /**
  * List of keys which can't be represented as a [Char].

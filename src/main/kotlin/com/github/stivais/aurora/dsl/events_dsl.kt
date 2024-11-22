@@ -21,7 +21,7 @@ import kotlin.experimental.ExperimentalTypeInference
  *
  * Has an optional return value.
  */
-@OverloadLambda
+@OverloadResolutionByLambdaReturnType
 fun ElementScope<*>.onClick(button: Int = 0, block: (Mouse.Clicked) -> Boolean) {
     element.registerEvent(Mouse.Clicked(button), block)
 }
@@ -31,7 +31,8 @@ fun ElementScope<*>.onClick(button: Int = 0, block: (Mouse.Clicked) -> Boolean) 
  *
  * Returns false by default.
  */
-@JvmName("onClickUnit") @OverloadLambda
+@JvmName("onClickUnit")
+@OverloadResolutionByLambdaReturnType
 inline fun ElementScope<*>.onClick(button: Int = 0, crossinline block: (Mouse.Clicked) -> Unit) {
     element.registerEvent(Mouse.Clicked(button)) { block(it); false }
 }
@@ -51,7 +52,7 @@ inline fun ElementScope<*>.onRelease(button: Int = 0, crossinline block: (Mouse.
  *
  * Has an optional return value.
  */
-@OverloadLambda
+@OverloadResolutionByLambdaReturnType
 fun ElementScope<*>.onScroll(block: (Mouse.Scrolled) -> Boolean) {
     element.registerEvent(Mouse.Scrolled(0f), block)
 }
@@ -63,7 +64,8 @@ fun ElementScope<*>.onScroll(block: (Mouse.Scrolled) -> Boolean) {
  *
  * Returns false by default.
  */
-@JvmName("onScrollUnit") @OverloadLambda
+@JvmName("onScrollUnit")
+@OverloadResolutionByLambdaReturnType
 inline fun ElementScope<*>.onScroll(crossinline block: (Mouse.Scrolled) -> Unit) {
     element.registerEvent(Mouse.Scrolled(0f)) { block(it); false }
 }
@@ -89,6 +91,24 @@ inline fun ElementScope<*>.onMouseMove(crossinline block: (Mouse.Moved) -> Unit)
     element.registerEvent(Mouse.Moved) { block(it); false }
 }
 
+/**
+ * Registers [Mouse.Entered] event.
+ *
+ * Returns false by default.
+ */
+inline fun ElementScope<*>.onMouseEnter(crossinline block: (Mouse.Entered) -> Unit) {
+    element.registerEvent(Mouse.Entered) { block(it); false }
+}
+
+/**
+ * Registers [Mouse.Entered] event.
+ *
+ * Returns false by default.
+ */
+inline fun ElementScope<*>.onMouseExit(crossinline block: (Mouse.Exited) -> Unit) {
+    element.registerEvent(Mouse.Exited) { block(it); false }
+}
+
 //-----------------//
 // Lifetime events //
 //-----------------//
@@ -109,5 +129,3 @@ inline fun ElementScope<*>.onAdd(crossinline block: (Lifetime.Initialized) -> Un
 inline fun ElementScope<*>.onRemove(crossinline block: (Lifetime.Uninitialized) -> Unit) {
     element.registerEvent(Lifetime.Uninitialized) { block(it); false }
 }
-
-private typealias OverloadLambda = OverloadResolutionByLambdaReturnType

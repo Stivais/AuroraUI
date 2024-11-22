@@ -9,6 +9,7 @@ import com.github.stivais.aurora.constraints.impl.positions.Center
 import com.github.stivais.aurora.events.AuroraEvent
 import com.github.stivais.aurora.events.Lifetime
 import com.github.stivais.aurora.events.Mouse
+import com.github.stivais.aurora.transforms.Transform
 import com.github.stivais.aurora.utils.loop
 
 /**
@@ -77,13 +78,27 @@ abstract class Element(
     var internalX: Float = 0f
     var internalY: Float = 0f
 
-    var scaleX: Float = 0f
-    var scaleY: Float = 0f
+    /**
+     * List of [Transform] to apply to this element.
+     *
+     * If this is null, there is no transforms to apply.
+     */
+    var transforms: ArrayList<Transform>? = null
 
     /**
-     * If the element should redraw on next frame
+     * Current x scale multiplier.
      */
-    private var redraw = false
+    var scaleX: Float = 1f
+
+    /**
+     * Current y scale multiplier.
+     */
+    var scaleY: Float = 1f
+
+    /**
+     * If the element should redraw on next frame.
+     */
+    var redraw = false
 
     var renders: Boolean = true
         get() = field && enabled
@@ -94,17 +109,17 @@ abstract class Element(
     var scissors: Boolean = false
 
     /**
-     * Initializes this element with a reference to the [AuroraUI] being used.
+     * Initializes this element.
      */
-    fun initialize(ui: AuroraUI) {
-        this.ui = ui
+    fun initialize() {
+        accept(Lifetime.Initialized)
         children?.loop {
-            it.initialize(ui)
+            it.initialize()
         }
     }
 
     /**
-     * This renders the elements contents
+     * This renders the elements contents.
      */
     abstract fun draw()
 
@@ -123,22 +138,31 @@ abstract class Element(
         if (renders) {
             renderer.push()
             if (scissors) renderer.pushScissor(x, y, width, height)
+            transforms?.loop {
+                it.apply(element = this, renderer)
+            }
             draw()
             children?.loop {
                 it.render()
             }
-            if (hovered) renderer.hollowRect(x, y, width, height, 1f, Color.WHITE.rgba)
+//            if (hovered) renderer.hollowRect(x, y, width, height, 1f, Color.WHITE.rgba)
             if (scissors) renderer.popScissor()
             renderer.pop()
         }
     }
 
     /**
-     * Marks the element so it can redraw it
+     * Marks the element so it can redraw it.
+     *
+     * If the element's parent size relies on children, it will redraw it.
      */
     fun redraw() {
-        val element = parent ?: this
-        element.redraw = true
+        var p = parent
+        while (p != null) {
+            if (!p.constraints.sizeReliesOnChildren()) break
+            p = p.parent
+        }
+        p?.redraw = true
     }
 
     /**
@@ -147,7 +171,7 @@ abstract class Element(
      * Sizes the current element, and does that for all elements under this one.
      *
      * If the size constraint [relies on its element's children][com.github.stivais.aurora.constraints.Constraint.Size.reliesOnChildren],
-     * it will wait until after positioning to size itself
+     * it will wait until after positioning to size itself.
      *
      * @see positionChildren
      * @see postSize
@@ -162,14 +186,14 @@ abstract class Element(
     }
 
     /**
-     * Gets ran at the start of [positionChildren]
+     * Gets ran at the start of [positionChildren].
      *
      * @see positionChildren
      */
     open fun prePosition() {}
 
     /**
-     * Gets ran at the end of [positionChildren]
+     * Gets ran at the end of [positionChildren].
      *
      * @see positionChildren
      */
@@ -180,7 +204,7 @@ abstract class Element(
      *
      * Positions the elements children, and does it for all elements under this one.
      *
-     * @param continue If it should continue positioning to it's children
+     * @param continue If it should continue positioning to its children.
      * @see size
      * @see position
      * @see postSize
@@ -207,9 +231,9 @@ abstract class Element(
      * "Final" stage of the positioning pipeline.
      *
      * Sizes this element if a size constraint [relies on its element's children][com.github.stivais.aurora.constraints.Constraint.Size.reliesOnChildren],
-     * and then it corrects its position, Note: It causes all elements (starting from this parent) to be repositioned again
+     * and then it corrects its position, Note: It causes all elements (starting from this parent) to be repositioned again.
      *
-     * @param continue Used to prevent a stackoverflow
+     * @param continue Used to prevent a stackoverflow.
      * @see positionChildren
      */
     private fun postSize(`continue`: Boolean = true) {
@@ -225,7 +249,7 @@ abstract class Element(
     }
 
     /**
-     * Disables rendering for any element outside of it's parent element
+     * Disables rendering for any element outside of it's parent element.
      */
     fun clip() {
         children?.loop {
@@ -250,14 +274,20 @@ abstract class Element(
             if (x is Undefined) x = newX
             if (y is Undefined) y = newY
         }
-        if (::ui.isInitialized) {
-            element.initialize(ui)
-            element.accept(Lifetime.Initialized)
-        }
+        element.ui = ui
+        element.initialize()
+        redraw = true
+    }
+
+    fun removeElement(element: Element?) {
+        if (element == null || children.isNullOrEmpty()) return
+        children!!.remove(element)
+        element.parent = null
+        ui.eventManager.postToAll(Lifetime.Uninitialized, element)
     }
 
     /**
-     * Gets default the [Positions][Constraint.Position] for when an element is added and its positions are undefined
+     * Gets default the [Positions][Constraint.Position] for when an element is added and its positions are undefined.
      */
     open fun getDefaultPositions(): Pair<Constraint.Position, Constraint.Position> = Pair(Center, Center)
 
@@ -294,7 +324,7 @@ abstract class Element(
     /**
      * Registers an event to this element.
      *
-     * If the event inherits [AuroraEvent.NonSpecific], it's [Class] will be added to [events]
+     * If the event inherits [AuroraEvent.NonSpecific], it's [Class] will be added to [events].
      *
      * If the event isn't a lifetime event, it will mark [acceptsInput] as true.
      */
@@ -308,6 +338,14 @@ abstract class Element(
         events!!.getOrPut(key) { arrayListOf() }.add(block as (AuroraEvent) -> Boolean)
     }
 
+    /**
+     * Registers a [Transform] to this element.
+     */
+    fun addTransform(transform: Transform) {
+        if (transforms == null) transforms = arrayListOf()
+        transforms!!.add(transform)
+    }
+
     // constraint util, maybe somewhere el;se
     fun getSize(horizontal: Boolean) = (if (horizontal) width else height)
     fun getPosition(horizontal: Boolean) = if (horizontal) internalX else internalY
@@ -318,14 +356,14 @@ abstract class Element(
     fun isInside(x: Float, y: Float): Boolean {
         val tx = this.x
         val ty = this.y
-        return x in tx..tx + (width) && y in ty..ty + (height)
+        return x in tx..tx + (screenWidth()) && y in ty..ty + (screenHeight())
     }
 
     /**
      * Checks if an element intersects with this element.
      */
     fun intersects(other: Element): Boolean {
-        return intersects(other.x, other.y, other.width, other.height)
+        return intersects(other.x, other.y, other.screenWidth(), other.screenHeight())
     }
 
     /**
@@ -334,8 +372,18 @@ abstract class Element(
     private fun intersects(x: Float, y: Float, width: Float, height: Float): Boolean {
         val tx = this.x
         val ty = this.y
-        val tw = this.width
-        val th = this.height
+        val tw = screenWidth()
+        val th = screenHeight()
         return (x < tx + tw && tx < x + width) && (y < ty + th && ty < y + height)
     }
+
+    /**
+     * Gets this elements width on the screen
+     */
+    fun screenWidth() = width * scaleX
+
+    /**
+     * Gets this elements height on the screen
+     */
+    fun screenHeight() = height * scaleY
 }

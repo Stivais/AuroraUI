@@ -1,6 +1,8 @@
 package com.github.stivais.aurora.operations
 
 /**
+ * # Operation
+ *
  * Operations are functions that are run every frame inside a [UI][com.github.stivais.aurora.AuroraUI],
  * usually to calculate or time something, and aren't tied to any element.
  */

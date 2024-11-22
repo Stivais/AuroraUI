@@ -1,3 +1,5 @@
+@file:Suppress("UNUSED")
+
 package com.github.stivais.aurora.utils
 
 import com.github.stivais.aurora.color.Color
@@ -41,6 +43,36 @@ fun getRGBA(red: Int, green: Int, blue: Int, alpha: Int): Int {
 fun getRGBA(red: Int, green: Int, blue: Int, alpha: Float): Int {
     return (((alpha * 255).roundToInt() shl 24) and 0xFF000000.toInt()) or ((red shl 16) and 0x00FF0000) or ((green shl 8) and 0x0000FF00) or (blue and 0x000000FF)
 }
+
+/**
+ * Gets an RGBA value from a hexadecimal color string (#RRGGBB or #RRGGBBAA).
+ *
+ * @throws IllegalArgumentException If hex value is invalid.
+ */
+fun hexToRGBA(hex: String): Int {
+    return when (hex.length) {
+        7 -> (255 shl 24) or hex.substring(1, 7).toInt(16)
+        9 -> (hex.substring(7, 9).toInt(16) shl 24) or hex.substring(1, 7).toInt(16)
+        else -> throw IllegalArgumentException("Invalid hex color format: $hex. Use #RRGGBB or #RRGGBBAA.")
+    }
+}
+
+/**
+ * Gets a string representing a hexadecimal color value. (#RRGGBB or #RRGGBBAA)
+ */
+fun Color.toHexString(): String {
+    return "#" + Integer.toHexString(rgba).substring(2)
+}
+
+/**
+ * Copies a color with the new alpha value provided.
+ */
+fun Color.withAlpha(alpha: Float): Color = Color.RGB(red, green, blue, alpha)
+
+/**
+ * Copies a color with the new alpha value provided.
+ */
+fun Color.withAlpha(alpha: Int): Color = Color.RGB(red, green, blue, alpha / 255f)
 
 /**
  * Converts any [Color] into a [Color.HSB]

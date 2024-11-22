@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.github.stivais.aurora.animations
 
 import kotlin.math.pow
@@ -19,12 +21,20 @@ class Animation(
 
     var finished: Boolean = false
 
+    private var onFinish: (() -> Unit)? = null
+
     fun get(): Float {
         val percent = ((System.nanoTime() - time) / duration)
         if (percent >= 1f) {
             finished = true
+            onFinish?.invoke()
         }
         return if (finished) 1f else style.getValue(percent)
+    }
+
+    fun onFinish(block: () -> Unit): Animation {
+        onFinish = block
+        return this
     }
 
     /**

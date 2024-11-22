@@ -1,3 +1,5 @@
+@file:Suppress("nothing_to_inline")
+
 package com.github.stivais.aurora.elements
 
 import com.github.stivais.aurora.AuroraUI
@@ -13,14 +15,27 @@ import com.github.stivais.aurora.dsl.size
 import com.github.stivais.aurora.elements.impl.*
 import com.github.stivais.aurora.elements.impl.layout.Column
 import com.github.stivais.aurora.elements.impl.layout.Row
+import com.github.stivais.aurora.operations.Operation
 import com.github.stivais.aurora.renderer.data.Font
 import com.github.stivais.aurora.renderer.data.Gradient
 import com.github.stivais.aurora.renderer.data.Image
 import com.github.stivais.aurora.renderer.data.Radii
+import com.github.stivais.aurora.transforms.Transform
 
-class ElementScope<E : Element>(val element: E) {
+open class ElementScope<E : Element>(val element: E) {
 
     inline val ui get() = element.ui
+
+    inline var enabled: Boolean
+        get() = element.enabled
+        set(value) {
+            element.enabled = value
+        }
+
+    inline fun redraw() {
+        val element = element.parent ?: element
+        element.redraw()
+    }
 
     @DSL
     inline fun block(
@@ -83,12 +98,27 @@ class ElementScope<E : Element>(val element: E) {
         block: ElementScope<Scrollable>.() -> Unit
     ) = Scrollable(constraints).scope(block)
 
-    inline fun <E : Element> E.scope(block: ElementScope<E>.() -> Unit): ElementScope<E> {
-        element.addElement(this)
-        val scope = ElementScope(this)
+    inline fun <E : Element> E.add() = element.addElement(this)
+
+    inline fun <E : Element> E.scope(block: ElementScope<E>.() -> Unit): ElementScope<E> = scope(this, block)
+
+    @JvmName("createScope")
+    inline fun <E : Element> scope(element: E, block: ElementScope<E>.() -> Unit): ElementScope<E> {
+        this.element.addElement(element)
+        val scope = ElementScope(element)
         scope.block()
         return scope
     }
+
+    /**
+     * Registers an [Operation] to the [ui].
+     */
+    fun operation(operation: Operation) = element.ui.addOperation(operation)
+
+    /**
+     * Registers a [Transform] to the element in this scope.
+     */
+    fun transform(transform: Transform) = element.addTransform(transform)
 }
 
 /**

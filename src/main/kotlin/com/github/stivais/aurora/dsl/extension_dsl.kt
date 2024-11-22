@@ -3,7 +3,6 @@ package com.github.stivais.aurora.dsl
 import com.github.stivais.aurora.constraints.impl.measurements.Pixel
 import com.github.stivais.aurora.elements.Element
 import com.github.stivais.aurora.elements.ElementScope
-import com.github.stivais.aurora.utils.log
 
 /**
  * Gets ran when dragging down on an element.
@@ -12,24 +11,18 @@ import com.github.stivais.aurora.utils.log
  *
  * @param block Function to get ran. Parameters represent percentage-based position of the mouse when dragged
  */
-inline fun ElementScope<*>.onDrag(crossinline block: (x: Float, y: Float) -> Unit) {
+inline fun ElementScope<*>.onDrag(crossinline block: () -> Unit) {
     var pressed = false
     onClick {
         pressed = true
-        block(
-            ((ui.mx - element.x) / element.width).coerceIn(0f, 1f),
-            ((ui.my - element.y) / element.height).coerceIn(0f, 1f),
-        )
+        block.invoke()
     }
     onRelease {
         pressed = false
     }
     onMouseMove {
         if (pressed) {
-            block(
-                ((ui.mx - element.x) / element.width).coerceIn(0f, 1f),
-                ((ui.my - element.y) / element.height).coerceIn(0f, 1f),
-            )
+            block.invoke()
         }
     }
 }
@@ -44,14 +37,15 @@ inline fun ElementScope<*>.onDrag(crossinline block: (x: Float, y: Float) -> Uni
  */
 fun ElementScope<*>.draggable(
     button: Int = 0,
-    moves: Element = element
+    moves: Element = element,
+    coerce: Boolean = true,
 ) {
     val px: Pixel = 0.px
     val py: Pixel = 0.px
 
-    moves.log()
-
     onAdd {
+        moves.size()
+        moves.positionChildren()
         px.pixels = moves.internalX
         py.pixels = moves.internalY
         moves.constraints.x = px
@@ -65,9 +59,15 @@ fun ElementScope<*>.draggable(
         clickedX = ui.mx - moves.internalX
         clickedY = ui.my - moves.internalY
     }
-    onDrag { _, _ ->
-        px.pixels = (ui.mx - clickedX).coerceIn(0f, ui.main.width - moves.width).log()
-        py.pixels = (ui.my - clickedY).coerceIn(0f, ui.main.height - moves.height).log()
+    onDrag {
+        var newX = ui.mx - clickedX
+        var newY = ui.my - clickedY
+        if (coerce) {
+            newX = newX.coerceIn(0f, (ui.main.width - moves.width))
+            newY = newY.coerceIn(0f, (ui.main.height - moves.height))
+        }
+        px.pixels = newX
+        py.pixels = newY
         element.redraw()
     }
 }

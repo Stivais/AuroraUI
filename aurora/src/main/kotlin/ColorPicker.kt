@@ -58,9 +58,9 @@ fun ElementScope<*>.colorPicker(value: Color.HSB) = group {
                         radius = 6.radius()
                     )
 
-                    onDrag { x, y ->
-                        println("$x, $y")
-                    }
+//                    onDrag { x, y ->
+//                        println("$x, $y")
+//                    }
                 }
 
                 // hue

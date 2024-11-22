@@ -8,13 +8,20 @@ import com.github.stivais.aurora.events.Lifetime
 import com.github.stivais.aurora.operations.Operation
 import com.github.stivais.aurora.renderer.Renderer
 import com.github.stivais.aurora.renderer.data.Font
+import com.github.stivais.aurora.utils.loopRemoveIf
 
 class AuroraUI(val renderer: Renderer) {
 
     /**
+     * Marker for if this ui is initialized,
+     * to prevent [initialize] and [close] being run multiple times in a row.
+     */
+    private var initialized = false
+
+    /**
      * The root element, all rendering and events start from here.
      */
-    val main = Group(Constraints(0.px, 0.px, 0.px, 0.px))
+    val main = Group(Constraints(0.px, 0.px, 0.px, 0.px)).also { it.ui = this }
 
     /**
      * Handles [events][com.github.stivais.aurora.events.AuroraEvent] and Input.
@@ -42,16 +49,20 @@ class AuroraUI(val renderer: Renderer) {
 
     /**
      * Sets up this UIs width and height, and initialize all the initial elements.
+     *
+     * If [initialized] is true it will not do anything.
      */
     fun initialize(width: Int, height: Int) {
-        main.constraints.width = width.px
-        main.constraints.height = height.px
+        if (!initialized) {
+            initialized = true
+            main.constraints.width = width.px
+            main.constraints.height = height.px
 
-        main.initialize(this)
-        main.size()
-        main.positionChildren()
-        main.clip()
-        eventManager.postToAll(Lifetime.Initialized)
+            main.initialize()
+            main.size()
+            main.positionChildren()
+            main.clip()
+        }
     }
 
     /**
@@ -60,10 +71,8 @@ class AuroraUI(val renderer: Renderer) {
      * Renders all the elements to the screen.
      */
     fun render() {
-        if (operations.size != 0) {
-            operations.removeAll { // todo: make fastRemove
-                it.run()
-            }
+        operations.loopRemoveIf {
+            it.run()
         }
         renderer.beginFrame(main.width, main.height)
         renderer.push()
@@ -73,12 +82,30 @@ class AuroraUI(val renderer: Renderer) {
     }
 
     /**
+     * Posts [Lifetime.Uninitialized] to all elements.
+     *
+     * Use this whenever your UI is closed.
+     *
+     * If [initialized] is true it will do nothing.
+     */
+    fun close() {
+        if (initialized) {
+            initialized = false
+            eventManager.postToAll(Lifetime.Uninitialized, main)
+        }
+    }
+
+    /**
      * Resizes the UI, so it can match window's width and height.
      */
     fun resize(width: Int, height: Int) {
         main.constraints.width = width.px
         main.constraints.height = height.px
         main.redraw()
+    }
+
+    fun addOperation(operation: Operation) {
+        operations.add(operation)
     }
 
     companion object {

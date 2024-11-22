@@ -8,7 +8,6 @@ import com.github.stivais.aurora.events.Focused
 import com.github.stivais.aurora.events.Keyboard
 import com.github.stivais.aurora.events.Mouse
 import com.github.stivais.aurora.input.Keys
-import com.github.stivais.aurora.input.Modifier
 import com.github.stivais.aurora.renderer.data.Font
 import kotlin.math.max
 import kotlin.math.min
@@ -33,19 +32,22 @@ class TextInput(
     positions: Positions,
     size: Constraint.Size,
 ) : Text(default, font, color, positions, size) {
+
     private var caret = text.length
         set(value) {
             field = value.coerceIn(0, text.length)
-            caretX = renderer.textWidth(text.substring(0, field), height, font)
+            caretX = renderer.textWidth(text.substring(0, value), height, font)
         }
     private var selection = caret
         set(value) {
             field = value.coerceIn(0, text.length)
-            selectionX = renderer.textWidth(text.substring(0, field), height, font)
+            selectionX = renderer.textWidth(text.substring(0, value), height, font)
         }
+
     private var caretX: Float = 0f
     private var selectionX: Float = 0f
     private var offset = 0f
+
     private var lastBlinkTime = System.currentTimeMillis()
     private var cursorVisible = true
     private val cursorBlinkRate = 500L

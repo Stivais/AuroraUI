@@ -27,6 +27,7 @@ class EventManager(private val ui: AuroraUI) {
         }
 
     fun onMouseMove(x: Float, y: Float) {
+        if (mouseX == x && mouseY == y) return
         mouseX = x
         mouseY = y
         hoveredElement = getHovered(x, y)

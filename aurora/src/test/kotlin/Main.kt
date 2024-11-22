@@ -1,13 +1,12 @@
 import com.github.stivais.GLFWWindow
 import com.github.stivais.NVGRenderer
-import com.github.stivais.aurora.AuroraUI
 import com.github.stivais.aurora.color.Color
 import com.github.stivais.aurora.constraints.impl.size.Bounding
 import com.github.stivais.aurora.dsl.*
 import com.github.stivais.aurora.elements.impl.Block.Companion.outline
 import com.github.stivais.aurora.elements.impl.Scrollable
 import com.github.stivais.aurora.elements.impl.Scrollable.Companion.scroll
-import com.github.stivais.aurora.elements.impl.TextInput
+import com.github.stivais.aurora.elements.impl.popup
 
 
 fun main() {
@@ -21,21 +20,27 @@ fun main() {
         Aurora(renderer = NVGRenderer) {
 //            colorPicker(Color.RGB(50, 150, 220).toHSB())
 
-            block(
-                size(Bounding + 10.px, 100.px),
-                Color.RGB(255, 0, 0)
-            ) {
-                val input = TextInput(
-                    default = "hi",
-                    font = AuroraUI.defaultFont,
-                    color = Color.WHITE,
-                    at(),
-                    50.px
-                ).scope{}
+            var index = 0
+            operation {
+                println("hi")
+                index++
+                index == 5
+            }
 
+            val popup = popup(size(50.px, 50.px), smooth = true) {
+                block(copies(), Color.WHITE)
                 onClick {
-                    ui.eventManager.focused = input.element
+                    closePopup()
                     true
+                }
+            }
+
+            group {
+                block(
+                    size(100.px, 100.px),
+                    Color.WHITE
+                ) {
+                    draggable(moves = element.parent!!)
                 }
             }
 

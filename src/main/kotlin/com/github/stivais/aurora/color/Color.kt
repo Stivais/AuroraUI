@@ -175,19 +175,22 @@ interface Color {
         fun animate(duration: Float, style: Animation.Style): Animation? {
             if (duration == 0f) {
                 swap()
-                return null
-            }
-            animation = if (animation != null) {
-                from = rgba
-                swap()
-                Animation(duration * animation!!.get(), style)
+                from = color1.rgba // here so it updates if you swap a color and want to animate it later
             } else {
-                Animation(duration, style)
+                if (animation != null) {
+                    swap()
+                    animation = Animation(duration * animation!!.get(), style)
+                    from = rgba
+                } else {
+                    animation = Animation(duration, style)
+                    from = color1.rgba
+                }
+                return animation!!
             }
-            return animation
+            return null
         }
 
-        private fun swap() {
+        fun swap() {
             val temp = color2
             color2 = color1
             color1 = temp
@@ -203,5 +206,14 @@ interface Color {
 
         @JvmField
         val BLACK: RGB = RGB(0, 0, 0, 1f)
+
+        @JvmField
+        val RED = RGB(255, 0, 0)
+
+        @JvmField
+        val BLUE = RGB(0, 0, 255)
+
+        @JvmField
+        val GREEN = RGB(0, 255, 0)
     }
 }
