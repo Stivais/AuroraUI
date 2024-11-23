@@ -1,4 +1,5 @@
 @file:OptIn(ExperimentalTypeInference::class)
+@file:Suppress("unused")
 
 package com.github.stivais.aurora.dsl
 

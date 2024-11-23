@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.github.stivais.aurora.dsl
 
 import com.github.stivais.aurora.animations.Animation

@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.github.stivais.aurora.dsl
 
 import com.github.stivais.aurora.constraints.Constraint
@@ -9,6 +11,7 @@ import com.github.stivais.aurora.constraints.impl.measurements.Undefined
 import com.github.stivais.aurora.constraints.impl.operational.Additive
 import com.github.stivais.aurora.constraints.impl.operational.Multiplicative
 import com.github.stivais.aurora.constraints.impl.operational.Subtractive
+import com.github.stivais.aurora.constraints.impl.positions.Alignment
 import com.github.stivais.aurora.constraints.impl.size.Bounding
 import com.github.stivais.aurora.constraints.impl.size.Copying
 import com.github.stivais.aurora.constraints.impl.size.Fill
@@ -21,14 +24,32 @@ import com.github.stivais.aurora.constraints.impl.size.Fill
 /**
  * Creates a pixel constraint from a number.
  */
-val Number.px: Pixel
+inline val Number.px: Pixel
     get() = Pixel(this.toFloat())
 
 /**
  * Creates a pixel constraint from a number.
  */
-val Number.percent: Percent
+inline val Number.percent: Percent
     get() = Percent(this.toFloat() / 100f)
+
+/**
+ * Creates an [Alignment.Right] position from an existing [position][Constraint.Position]
+ */
+inline val Constraint.Position.alignRight: Alignment.Right
+    get() = Alignment.Right(this)
+
+/**
+ * Creates an [Alignment.Center] position from an existing [position][Constraint.Position]
+ */
+inline val Constraint.Position.alignCenter: Alignment.Center
+    get() = Alignment.Center(this)
+
+/**
+ * Creates an [Alignment.Opposite] position from an existing [position][Constraint.Position]
+ */
+inline val Constraint.Position.alignOpposite: Alignment.Opposite
+    get() = Alignment.Opposite(this)
 
 /**
  * Shortened version of [Positions], for a much more appealing look.

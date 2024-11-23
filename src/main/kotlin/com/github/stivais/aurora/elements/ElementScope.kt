@@ -7,7 +7,7 @@ import com.github.stivais.aurora.color.Color
 import com.github.stivais.aurora.constraints.Constraint
 import com.github.stivais.aurora.constraints.Constraints
 import com.github.stivais.aurora.constraints.Positions
-import com.github.stivais.aurora.constraints.impl.positions.Center
+import com.github.stivais.aurora.constraints.impl.measurements.Undefined
 import com.github.stivais.aurora.constraints.impl.size.Bounding
 import com.github.stivais.aurora.dsl.at
 import com.github.stivais.aurora.dsl.percent
@@ -59,7 +59,7 @@ open class ElementScope<E : Element>(val element: E) {
         string: String,
         font: Font = AuroraUI.defaultFont,
         color: Color = Color.WHITE,
-        pos: Positions = at(Center, Center),
+        pos: Positions = at(Undefined, Undefined),
         size: Constraint.Size = 50.percent,
         block: ElementScope<Text>.() -> Unit = {}
     ) = Text(string, font, color, pos, size).scope(block)

@@ -65,13 +65,9 @@ class Scrollable(
     override fun getDefaultPositions() = Pixel.ZERO to Pixel.ZERO
 
     /**
-     * Starts an animation to scroll by an amount
+     * Starts an animation to scroll by an amount.
      */
-    fun scroll(
-        amount: Float,
-        duration: Float = 0.15.seconds,
-        style: Animation.Style = Animation.Style.EaseOutQuint
-    ) {
+    fun scroll(amount: Float, duration: Float, style: Animation.Style) {
         fromY = offsetY
         toY = offsetY + amount
         animationY = Animation(duration, style)
@@ -81,11 +77,15 @@ class Scrollable(
         /**
          * Invokes [Scrollable.scroll] and redraws the element.
          *
-         * Also tells the element to [redraw]
+         * Also tells the element to [redraw].
          */
         @DSL
-        fun ElementScope<Scrollable>.scroll(amount: Float) {
-            element.scroll(amount)
+        fun ElementScope<Scrollable>.scroll(
+            amount: Float,
+            duration: Float = 0.15.seconds,
+            style: Animation.Style = Animation.Style.EaseOutQuint
+        ) {
+            element.scroll(amount, duration, style)
             element.redraw()
         }
     }
