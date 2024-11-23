@@ -89,7 +89,7 @@ fun ElementScope<*>.draggable(
 fun ElementScope<Block>.hoverEffect(
     factor: Float,
     duration: Float = 0.2.seconds,
-    style: Animation.Style = Animation.Style.EaseOutQuad
+    style: Animation.Style = Animation.Style.Linear
 ) {
     val before = element.color!!
     val hover = Color.Animated(from = before, to = color { before.rgba.multiply(factor = factor) })

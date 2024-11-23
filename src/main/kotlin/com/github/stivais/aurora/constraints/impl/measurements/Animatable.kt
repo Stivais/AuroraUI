@@ -52,6 +52,8 @@ class Animatable(
         return from.calculate(element, type)
     }
 
+    override fun reliesOnChildren() = from.reliesOnChildren() || to.reliesOnChildren()
+
     fun animate(duration: Float, style: Animation.Style): Animation? {
         if (duration == 0f) {
             swap()
