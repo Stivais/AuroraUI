@@ -97,13 +97,17 @@ fun indent(amount: Float): Constraints {
 
 /**
  * Creates a [Constraints] instance,
- * where the sizes are [Bounding] + [padding]
+ * where the sizes are [Bounding] + [padding], with optional x and y positions.
  */
-fun bounds(padding: Constraint.Size? = null): Constraints {
-    if (padding == null) return size(Bounding, Bounding)
+fun bounds(
+    x: Constraint.Position = Undefined,
+    y: Constraint.Position = Undefined,
+    padding: Constraint.Size? = null
+): Constraints {
+    if (padding == null) return constrain(x, y, Bounding, Bounding)
 
     val size = Bounding + padding
-    return size(size, size)
+    return constrain(x, y, size, size)
 }
 
 /**

@@ -4,6 +4,8 @@
 package com.github.stivais.aurora.dsl
 
 import com.github.stivais.aurora.elements.ElementScope
+import com.github.stivais.aurora.events.Focused
+import com.github.stivais.aurora.events.Keyboard
 import com.github.stivais.aurora.events.Lifetime
 import com.github.stivais.aurora.events.Mouse
 import kotlin.experimental.ExperimentalTypeInference
@@ -121,8 +123,23 @@ inline fun ElementScope<*>.onMouseEnterExit(crossinline block: () -> Unit) {
 }
 
 //-----------------//
+// Keyboard events //
+//-----------------//
+
+/**
+ * Registers [Keyboard.CodeTyped] event.
+ *
+ * Has an optional return value.
+ */
+@OverloadResolutionByLambdaReturnType
+fun ElementScope<*>.onKeycodePressed(block: (Keyboard.CodeTyped) -> Boolean) {
+    element.registerEvent(Keyboard.CodeTyped(), block)
+}
+
+//-----------------//
 // Lifetime events //
 //-----------------//
+
 /**
  * Registers [Lifetime.Initialized] event.
  *
@@ -139,4 +156,36 @@ inline fun ElementScope<*>.onAdd(crossinline block: (Lifetime.Initialized) -> Un
  */
 inline fun ElementScope<*>.onRemove(crossinline block: (Lifetime.Uninitialized) -> Unit) {
     element.registerEvent(Lifetime.Uninitialized) { block(it); false }
+}
+
+//-----------------//
+// Lifetime events //
+//-----------------//
+
+/**
+ * Registers [Focused.Gained] event.
+ *
+ * Returns false by default.
+ */
+inline fun ElementScope<*>.onFocus(crossinline block: (Focused.Gained) -> Unit) {
+    element.registerEvent(Focused.Gained) { block(it); false }
+}
+
+/**
+ * Registers [Focused.Gained] event.
+ *
+ * Returns false by default.
+ */
+inline fun ElementScope<*>.onFocusLost(crossinline block: (Focused.Lost) -> Unit) {
+    element.registerEvent(Focused.Lost) { block(it); false }
+}
+
+/**
+ * Registers both [Focused.Gained] and [Focused.Lost] events, using the same function.
+ *
+ * Returns false by default.
+ */
+inline fun ElementScope<*>.onFocusChanged(crossinline block: () -> Unit) {
+    element.registerEvent(Focused.Gained) { block(); false }
+    element.registerEvent(Focused.Lost) { block(); false }
 }

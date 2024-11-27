@@ -132,6 +132,24 @@ object NVGRenderer : Renderer {
         nvgFill(vg)
     }
 
+    override fun dropShadow(
+        x: Float,
+        y: Float,
+        width: Float,
+        height: Float,
+        blur: Float,
+        spread: Float,
+        radius: Float
+    ) {
+        nvgBoxGradient(vg, x - spread, y - spread, width + spread * 2f, height + spread * 2f, radius + spread, blur, nvgColor, nvgColor2, nvgPaint)
+        nvgBeginPath(vg)
+        nvgRoundedRect(vg, x - spread, y - spread - blur, width + spread * 2f + blur * 2f, height + spread * 2f + blur * 2f, radius + spread)
+        nvgRoundedRect(vg, x, y, width, height, radius)
+        nvgPathWinding(vg, NVG_HOLE)
+        nvgFillPaint(vg, nvgPaint)
+        nvgFill(vg)
+    }
+
     override fun text(text: String, x: Float, y: Float, size: Float, color: Int, font: Font) {
         nvgBeginPath(vg)
         nvgFontSize(vg, size)

@@ -60,14 +60,21 @@ class EventManager(private val ui: AuroraUI) {
 
     fun onKeyTyped(char: Char): Boolean {
         if (focused != null) {
-            focused!!.acceptFocused(Keyboard.CharTyped(char, modifier))
+            return focused!!.acceptFocused(Keyboard.CharTyped(char, modifier))
         }
         return false
     }
 
     fun onKeyTyped(key: Keys): Boolean {
         if (focused != null) {
-            focused!!.acceptFocused(Keyboard.KeyTyped(key))
+            return focused!!.acceptFocused(Keyboard.KeyTyped(key, modifier))
+        }
+        return false
+    }
+
+    fun onKeycodePressed(code: Int): Boolean {
+        if (focused != null) {
+            return  focused!!.acceptFocused(Keyboard.CodeTyped(code, modifier))
         }
         return false
     }

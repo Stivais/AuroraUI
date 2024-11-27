@@ -14,7 +14,7 @@ import kotlin.math.pow
  */
 class Animation(
     private var duration: Float,
-    private val style: Style
+    private var style: Style
 ) {
 
     private var time: Long = System.nanoTime()
@@ -35,6 +35,12 @@ class Animation(
     fun onFinish(block: () -> Unit): Animation {
         onFinish = block
         return this
+    }
+
+    fun restart(duration: Float, style: Style) {
+        this.duration = duration
+        this.style = style
+        this.time = System.nanoTime()
     }
 
     /**

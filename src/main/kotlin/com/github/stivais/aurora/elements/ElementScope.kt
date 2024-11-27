@@ -107,6 +107,7 @@ open class ElementScope<E : Element>(val element: E) {
         this.element.addElement(element)
         val scope = ElementScope(element)
         scope.block()
+        element.initialize()
         return scope
     }
 

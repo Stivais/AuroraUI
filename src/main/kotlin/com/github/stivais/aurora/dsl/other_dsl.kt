@@ -3,6 +3,7 @@
 package com.github.stivais.aurora.dsl
 
 import com.github.stivais.aurora.AuroraUI
+import com.github.stivais.aurora.elements.Element
 import com.github.stivais.aurora.elements.ElementScope
 import com.github.stivais.aurora.elements.impl.Group
 import com.github.stivais.aurora.renderer.Renderer
@@ -98,4 +99,16 @@ fun ElementScope<*>.alpha(from: Float, to: Float): Alpha.Animated {
     val alpha = Alpha.Animated(from, to)
     transform(alpha)
     return alpha
+}
+
+/**
+ * Moves the element to the top inside of it's parent
+ */
+fun Element.moveToTop() {
+    // todo: maybe prevent action if parent is column and this element gets positioned
+    val it = this
+    this.parent!!.children!!.apply {
+        remove(it)
+        add(it)
+    }
 }

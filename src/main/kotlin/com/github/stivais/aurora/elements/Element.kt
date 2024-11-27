@@ -83,7 +83,7 @@ abstract class Element(
      *
      * If this is null, there is no transforms to apply.
      */
-    var transforms: ArrayList<Transform>? = null
+    private var transforms: ArrayList<Transform>? = null
 
     /**
      * Current x scale multiplier.
@@ -162,7 +162,7 @@ abstract class Element(
             if (!p.constraints.sizeReliesOnChildren()) break
             p = p.parent
         }
-        p?.redraw = true
+        (p ?: this).redraw = true
     }
 
     /**
@@ -275,7 +275,7 @@ abstract class Element(
             if (y is Undefined) y = newY
         }
         element.ui = ui
-        element.initialize()
+//        element.initialize()
         redraw = true
     }
 
@@ -298,12 +298,10 @@ abstract class Element(
      */
     fun accept(event: AuroraEvent): Boolean {
         if (events != null) {
-            // if i ever make mouse clicks focusable, find a way to separate them while using same class
-            val action = when (event) {
-                is AuroraEvent.NonSpecific -> events!![event::class.java] ?: events!![event]
-                else -> events!![event]
-            } ?: return false
-            action.loop { if (it(event)) return true }
+            // todo: figure out a way for nonspecific mouse events to work alongside regular while using same class
+            val key: Any = if (event is AuroraEvent.NonSpecific) event::class.java else event
+            (events!![key] ?: return false).loop { if (it(event)) return true }
+            if (event is Lifetime) events!!.remove(key)
         }
         return false
     }
@@ -330,10 +328,8 @@ abstract class Element(
      */
     @Suppress("UNCHECKED_CAST")
     fun <E : AuroraEvent> registerEvent(event: E, block: (E) -> Boolean) {
-        acceptsInput = true
-        if (events == null) {
-            events = hashMapOf()
-        }
+        if (event !is Lifetime) acceptsInput = true
+        if (events == null) events = hashMapOf()
         val key: Any = if (event is AuroraEvent.NonSpecific) event::class.java else event
         events!!.getOrPut(key) { arrayListOf() }.add(block as (AuroraEvent) -> Boolean)
     }

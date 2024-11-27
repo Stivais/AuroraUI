@@ -100,6 +100,15 @@ interface Renderer {
         x: Float, y: Float, w: Float, h: Float, color1: Int, color2: Int, direction: Gradient, radii: Radii
     ) = gradientRect(x, y, w, h, color1, color2, direction, radii.topLeft, radii.bottomLeft, radii.bottomRight, radii.topRight)
 
+    fun dropShadow(
+        x: Float,
+        y: Float,
+        width: Float,
+        height: Float,
+        blur: Float,
+        spread: Float,
+        radius: Float,
+    )
 
     fun text(text: String, x: Float, y: Float, size: Float, color: Int, font: Font)
 

@@ -23,9 +23,9 @@ class Animatable(
     }
 
     /**
-     * Current animation for this [Animatable]
+     * Current animation for this [Animatable].
      *
-     * If this is null, that means it isn't animating
+     * If this is null, that means it isn't animating.
      */
     var animation: Animation? = null
         private set
@@ -54,6 +54,13 @@ class Animatable(
 
     override fun reliesOnChildren() = from.reliesOnChildren() || to.reliesOnChildren()
 
+    /**
+     * Starts an animation for this [Animatable]
+     *
+     * If the duration is 0f, it will directly swap [from] and [to].
+     *
+     * @return [Animation] if duration isn't 0f
+     */
     fun animate(duration: Float, style: Animation.Style): Animation? {
         if (duration == 0f) {
             swap()
@@ -70,6 +77,9 @@ class Animatable(
         return animation
     }
 
+    /**
+     * Swaps [from] and [to].
+     */
     fun swap() {
         val temp = to
         to = from
@@ -77,4 +87,54 @@ class Animatable(
     }
 
     override fun toString() = "Animatable(from=\"$from\", to=\"$to\")"
+
+    /**
+     * # Animatable.Raw
+     *
+     * This constraint allows you to smoothly animate to any value.
+     */
+    class Raw(start: Float) : Constraint.Measurement {
+
+        /**
+         * Current animation for this [Animatable.Raw]
+         *
+         * If this is null, that means it isn't animating.
+         */
+        private var animation: Animation? = null
+
+        private var from: Float = start
+        private var to: Float = 0f
+
+        private var current: Float = start
+
+        fun animate(to: Float, duration: Float, style: Animation.Style) {
+            if (animation == null) {
+                if (duration == 0f) {
+                    current = to
+                    from = to
+                } else {
+                    this.from = current
+                    this.to = to
+                    animation = Animation(duration, style)
+                }
+            } else {
+                this.from = current
+                this.to = to
+                animation!!.restart(duration, style)
+            }
+        }
+
+        fun to(to: Float) = if (animation != null) this.to = to else current = to
+
+        override fun calculate(element: Element, type: Int): Float {
+            if (animation != null) {
+                element.redraw()
+                current = from + (to - from) * animation!!.get()
+                if (animation!!.finished) animation = null
+            }
+            return current
+        }
+
+        override fun toString() = "Animatable.Raw(current=\"$current\")"
+    }
 }

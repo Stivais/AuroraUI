@@ -2,6 +2,7 @@ package com.github.stivais.aurora
 
 import com.github.stivais.aurora.constraints.Constraints
 import com.github.stivais.aurora.dsl.px
+import com.github.stivais.aurora.elements.Element
 import com.github.stivais.aurora.elements.impl.Group
 import com.github.stivais.aurora.events.EventManager
 import com.github.stivais.aurora.events.Lifetime
@@ -58,7 +59,6 @@ class AuroraUI(val renderer: Renderer) {
             main.constraints.width = width.px
             main.constraints.height = height.px
 
-            main.initialize()
             main.size()
             main.positionChildren()
             main.clip()
@@ -106,6 +106,14 @@ class AuroraUI(val renderer: Renderer) {
 
     fun addOperation(operation: Operation) {
         operations.add(operation)
+    }
+
+    fun focus(element: Element) {
+        eventManager.focused = element
+    }
+
+    fun unfocus() {
+        eventManager.focused = null
     }
 
     companion object {
