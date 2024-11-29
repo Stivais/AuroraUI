@@ -105,9 +105,10 @@ interface Renderer {
         y: Float,
         width: Float,
         height: Float,
+        color: Int,
         blur: Float,
         spread: Float,
-        radius: Float,
+        tl: Float, bl: Float, br: Float, tr: Float
     )
 
     fun text(text: String, x: Float, y: Float, size: Float, color: Int, font: Font)

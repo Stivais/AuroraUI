@@ -20,7 +20,7 @@ import com.github.stivais.aurora.utils.multiply
  *
  * @param block Function to get ran.
  */
-inline fun ElementScope<*>.onDrag(crossinline block: () -> Unit) {
+inline fun ElementScope<*>.onDrag(crossinline block: () -> Boolean) {
     var pressed = false
     onClick {
         pressed = true
@@ -32,6 +32,8 @@ inline fun ElementScope<*>.onDrag(crossinline block: () -> Unit) {
     onMouseMove {
         if (pressed) {
             block.invoke()
+        } else {
+            false
         }
     }
 }
@@ -43,7 +45,7 @@ inline fun ElementScope<*>.onDrag(crossinline block: () -> Unit) {
  *
  * @param block Function to get ran. Parameters represent percentage-based position of the mouse when dragged.
  */
-inline fun ElementScope<*>.onMouseDrag(crossinline block: (x: Float, y: Float) -> Unit) {
+inline fun ElementScope<*>.onMouseDrag(crossinline block: (x: Float, y: Float) -> Boolean) {
     onDrag {
         block(
             ((ui.mx - element.x) / element.width).coerceIn(0f, 1f),
@@ -67,12 +69,21 @@ fun ElementScope<*>.draggable(
     moves: Element = element,
     coerce: Boolean = true,
 ) {
-    val (px, py) = mutablePosition(target = moves)
+    var initialized = false
+    val px: Pixel = 0.px
+    val py: Pixel = 0.px
 
     var clickedX = 0f
     var clickedY = 0f
 
     onClick(button) {
+        if (!initialized) {
+            initialized = true
+            px.pixels = moves.internalX
+            py.pixels = moves.internalY
+            moves.constraints.x = px
+            moves.constraints.y = py
+        }
         clickedX = ui.mx - moves.internalX
         clickedY = ui.my - moves.internalY
         moves.moveToTop()
@@ -86,29 +97,9 @@ fun ElementScope<*>.draggable(
         }
         px.pixels = newX
         py.pixels = newY
-        element.redraw()
+        redraw()
+        false
     }
-}
-
-/**
- * Replaces the current elements position constraints to pixels for mutability.
- *
- * It will position the elements before converting
- *
- * @return Pair<Pixel, Pixel>, where first pixel represents x and second y.
- */
-inline fun ElementScope<*>.mutablePosition(target: Element = element): Pair<Pixel, Pixel> {
-    val px: Pixel = 0.px
-    val py: Pixel = 0.px
-    onAdd {
-        target.size()
-        target.positionChildren()
-        px.pixels = target.internalX
-        py.pixels = target.internalY
-        target.constraints.x = px
-        target.constraints.y = py
-    }
-    return px to py
 }
 
 /**

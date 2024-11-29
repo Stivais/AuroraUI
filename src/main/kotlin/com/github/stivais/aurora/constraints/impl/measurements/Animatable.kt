@@ -98,6 +98,8 @@ class Animatable(
         /**
          * Current animation for this [Animatable.Raw]
          *
+         * If duration is 0 and an animation exists, it will not overwrite it.
+         *
          * If this is null, that means it isn't animating.
          */
         private var animation: Animation? = null
@@ -118,9 +120,11 @@ class Animatable(
                     animation = Animation(duration, style)
                 }
             } else {
-                this.from = current
+                if (duration != 0f) {
+                    this.from = current
+                    animation!!.restart(duration, style)
+                }
                 this.to = to
-                animation!!.restart(duration, style)
             }
         }
 

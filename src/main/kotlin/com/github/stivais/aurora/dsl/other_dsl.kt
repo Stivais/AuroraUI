@@ -6,6 +6,7 @@ import com.github.stivais.aurora.AuroraUI
 import com.github.stivais.aurora.elements.Element
 import com.github.stivais.aurora.elements.ElementScope
 import com.github.stivais.aurora.elements.impl.Group
+import com.github.stivais.aurora.events.AuroraEvent
 import com.github.stivais.aurora.renderer.Renderer
 import com.github.stivais.aurora.renderer.data.Radii
 import com.github.stivais.aurora.transforms.impl.Alpha
@@ -105,10 +106,18 @@ fun ElementScope<*>.alpha(from: Float, to: Float): Alpha.Animated {
  * Moves the element to the top inside of it's parent
  */
 fun Element.moveToTop() {
-    // todo: maybe prevent action if parent is column and this element gets positioned
     val it = this
     this.parent!!.children!!.apply {
         remove(it)
         add(it)
     }
+}
+
+/**
+ * Passes an event to a different scope.
+ *
+ * Note: Shouldn't be used with any input related events (like Mouse click events).
+ */
+fun ElementScope<*>.passEvent(event: AuroraEvent, to: ElementScope<*>) {
+    ui.eventManager.postToAll(event, to.element)
 }

@@ -33,8 +33,6 @@ object NVGRenderer : Renderer {
     // used in getTextWidth to avoid reallocating
     private val fontBounds = FloatArray(4)
 
-//    private val scissorStack = Stack<Scissor>()
-
     private var drawing: Boolean = false
 
     init {
@@ -137,14 +135,20 @@ object NVGRenderer : Renderer {
         y: Float,
         width: Float,
         height: Float,
+        color: Int,
         blur: Float,
         spread: Float,
-        radius: Float
+        tl: Float,
+        bl: Float,
+        br: Float,
+        tr: Float
     ) {
-        nvgBoxGradient(vg, x - spread, y - spread, width + spread * 2f, height + spread * 2f, radius + spread, blur, nvgColor, nvgColor2, nvgPaint)
+        nvgRGBA(color.red.toByte(), color.green.toByte(), color.blue.toByte(), 125, nvgColor)
+        nvgRGBA(0, 0, 0, 0, nvgColor2)
+        nvgBoxGradient(vg, x - spread, y - spread, width + 2 * spread, height + 2 * spread, tl + spread, blur, nvgColor, nvgColor2, nvgPaint)
         nvgBeginPath(vg)
-        nvgRoundedRect(vg, x - spread, y - spread - blur, width + spread * 2f + blur * 2f, height + spread * 2f + blur * 2f, radius + spread)
-        nvgRoundedRect(vg, x, y, width, height, radius)
+        nvgRoundedRectVarying(vg, x - spread - blur, y - spread - blur, width + 2 * spread + 2 * blur, height + 2 * spread + 2 * blur, tl, tr, br, bl)
+        nvgRoundedRectVarying(vg, x, y, width, height, tl, tr, br, bl)
         nvgPathWinding(vg, NVG_HOLE)
         nvgFillPaint(vg, nvgPaint)
         nvgFill(vg)

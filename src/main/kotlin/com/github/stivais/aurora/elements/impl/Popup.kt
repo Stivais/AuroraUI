@@ -50,6 +50,7 @@ fun ElementScope<*>.popup(
 
     val popup = Popup(group, alphaAnimation, scaleAnimation, smooth)
     popup.block()
+    group.initialize()
 
     if (smooth) {
         alphaAnimation.animate(0.25.seconds, Animation.Style.EaseOutQuint)

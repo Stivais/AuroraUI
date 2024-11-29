@@ -275,7 +275,6 @@ abstract class Element(
             if (y is Undefined) y = newY
         }
         element.ui = ui
-//        element.initialize()
         redraw = true
     }
 
