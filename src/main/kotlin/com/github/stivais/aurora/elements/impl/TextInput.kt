@@ -30,7 +30,7 @@ class TextInput(
             val event = TextChanged(value)
             accept(event)
             if (!event.cancelled) {
-                field = value
+                field = event.string
                 parent?.redraw()
                 previousHeight = 0f
             }
@@ -42,28 +42,34 @@ class TextInput(
     private var caretX = 0f
     private var selectionWidth = 0f
 
+    private var textOffset = 0f
+
     override fun draw() {
+        var offset = 0f
         if (ui.eventManager.focused == this) {
-            val cx = x + caretX
-            renderer.line(cx, y, cx, y + height, 1f, Color.WHITE.rgba)
-            if (selectionWidth != 0f) {
-                renderer.rect(cx, y, selectionWidth, height, Color.RGB(0, 0, 255, 0.5f).rgba)
-            }
+            offset = textOffset
+            val x = x + caretX - offset
+
+            renderer.line(x, y, x, y + height, 1f, Color.WHITE.rgba)
+            if (selectionWidth != 0f) renderer.rect(x, y, selectionWidth, height, SELECTION_COLOR)
         }
-        renderer.hollowRect(x - 5, y - 5, width + 10, height + 10, 1f, Color.WHITE.rgba)
+
         if (text.isEmpty()) {
             renderer.text(placeholder, x, y, height, color!!.rgba.multiply(0.8f), font)
         } else {
-            super.draw()
+            renderer.text(text, x - offset, y, height, color!!.rgba, font)
         }
     }
 
     init {
+        scissors = true
+
         var dragging = false
         var clickCount = 1
         var lastClickTime = 0L
 
         registerEventUnit(Focused.Lost) {
+            textOffset = 0f
             clearSelection()
         }
         registerEventUnit(Mouse.Clicked(0)) {
@@ -138,7 +144,10 @@ class TextInput(
                 Keys.BACKSPACE -> {
                     if (selection != caret) {
                         deleteSelection()
-                    } else if (!mods.hasControl) {
+                    } else if (mods.hasControl) {
+                        text = ""
+                        caret = 0
+                    } else {
                         if (caret != 0) {
                             text = text.dropAt(caret, -1)
                             caret--
@@ -221,7 +230,7 @@ class TextInput(
      * Updates [caret], based on mouse position on the text input.
      */
     private fun caretFromMouse() {
-        val mx = ui.mx - x
+        val mx = ui.mx - x + textOffset
         var newCaret = 0
         var currWidth = 0f
 
@@ -245,14 +254,33 @@ class TextInput(
 
     /**
      * Updates caret's screen position.
+     *
+     * Will also adjust the visible part of the text, if width is defined.
      */
     private fun updateCaretPosition() {
-        caretX = renderer.textWidth(text.substring(0, caret), height, font)
         if (selection != caret) {
             selectionWidth = renderer.textWidth(text.substringSafe(selection, caret), height, font)
             if (selection <= caret) selectionWidth *= -1
+        } else selectionWidth = 0f
+
+        if (caret != 0) {
+            val previousX = caretX
+            caretX = renderer.textWidth(text.substring(0, caret), height, font)
+
+            if (!constraints.width.undefined()) {
+                if (previousX < caretX) {
+                    if (caretX - textOffset >= width) {
+                        textOffset = caretX - width
+                    }
+                } else {
+                    if (caretX - textOffset <= 0f) {
+                        textOffset =  renderer.textWidth(text.substring(0, caret - 1), height, font)
+                    }
+                }
+            }
         } else {
-            selectionWidth = 0f
+            caretX = 0f
+            textOffset = 0f
         }
     }
 
@@ -301,15 +329,27 @@ class TextInput(
     /**
      * Event, which gets registered when the text changes in a [TextInput].
      *
+     * The input is able to modify the string.
      * This event is cancellable.
      */
-    data class TextChanged(val string: String = "", var cancelled: Boolean = false) : AuroraEvent.NonSpecific {
+    data class TextChanged(var string: String = "", var cancelled: Boolean = false) : AuroraEvent.NonSpecific {
         fun cancel() {
             cancelled = true
+        }
+
+        /**
+         * Modifies the event's string with the input.
+         */
+        fun modifyString(string: String) {
+            this.string = string
         }
     }
 
     companion object {
+
+        // this is equivalent to getRGBA(255, 255, 255, 0.5f)
+        private const val SELECTION_COLOR: Int = -2147483393
+
         /**
          * Registers an event listener for [TextChanged].
          *
@@ -321,6 +361,16 @@ class TextInput(
             element.registerEvent(TextChanged()) {
                 block(it); false
             }
+        }
+
+        /**
+         * Defines the max width a [TextInput] can be.
+         *
+         * When the text surpasses that width, it will start scrolling to show the part of the text the caret is over.
+         */
+        @AuroraDSL
+        fun ElementScope<TextInput>.maxWidth(size: Constraint.Size) {
+            element.constraints.width = size
         }
      }
 }

@@ -1,5 +1,7 @@
 package com.github.stivais.aurora.constraints
 
+import com.github.stivais.aurora.constraints.Constraint.*
+import com.github.stivais.aurora.constraints.impl.measurements.Undefined
 import com.github.stivais.aurora.elements.Element
 
 /**
@@ -20,16 +22,21 @@ sealed interface Constraint {
 
     /**
      * If this constraint uses its children's value in the calculation,
-     * this is to ensure they're positioned/sized correctly in the [positioning pipeline][com.github.stivais.aurora.elements.Element.size]
+     * this is to ensure they're positioned/sized correctly in the [positioning pipeline][com.github.stivais.aurora.elements.Element.size].
      */
     fun reliesOnChildren(): Boolean = false
 
 
     /**
      * If this constraint uses its parent's value in the calculation,
-     * this is to ensure they're positioned/sized correctly
+     * this is to ensure they're positioned/sized correctly.
      */
     fun reliesOnParent(): Boolean = false
+
+    /**
+     * Utility function to check if this constraint is [Undefined].
+     */
+    fun undefined() = this is Undefined
 
     /**
      * # Position
@@ -41,14 +48,14 @@ sealed interface Constraint {
      * [Center][com.github.stivais.aurora.constraints.impl.positions.Center],
      * [Alignment.Center][com.github.stivais.aurora.constraints.impl.positions.Alignment.Center],
      * [Alignment.Right][com.github.stivais.aurora.constraints.impl.positions.Alignment.Right],
-     * [Alignment.Opposite][com.github.stivais.aurora.constraints.impl.positions.Alignment.Opposite]
+     * [Alignment.Opposite][com.github.stivais.aurora.constraints.impl.positions.Alignment.Opposite],
      */
     interface Position : Constraint {
 
         /**
-         * Calculates position, with [horizontal] defining if x or y is being positioned
+         * Calculates position, with [horizontal] defining if x or y is being positioned.
          *
-         * @param horizontal If this is true x is being positioned else y is being positioned
+         * @param horizontal If this is true x is being positioned else y is being positioned.
          */
         fun calculatePos(element: Element, horizontal: Boolean): Float
 
@@ -70,9 +77,9 @@ sealed interface Constraint {
     interface Size : Constraint {
 
         /**
-         * Calculates size, with [horizontal] defining if width or height is being sized
+         * Calculates size, with [horizontal] defining if width or height is being sized.
          *
-         * @param horizontal If this is true width is being sized else height is being sized
+         * @param horizontal If this is true width is being sized else height is being sized.
          */
         fun calculateSize(element: Element, horizontal: Boolean): Float
 

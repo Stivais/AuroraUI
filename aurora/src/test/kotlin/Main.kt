@@ -4,6 +4,7 @@ import com.github.stivais.aurora.dsl.Aurora
 import com.github.stivais.aurora.dsl.at
 import com.github.stivais.aurora.dsl.px
 import com.github.stivais.aurora.elements.impl.TextInput
+import com.github.stivais.aurora.elements.impl.TextInput.Companion.maxWidth
 import com.github.stivais.aurora.elements.impl.TextInput.Companion.onTextChanged
 
 
@@ -20,14 +21,17 @@ fun main() {
                 "hello world",
                 "placeholder",
                 at(),
-                75.px
+                50.px
             ).scope {
                 onTextChanged { event ->
                     val str = event.string
-                    if (str.length > 15) event.cancel()
+                    if (str.length > 15) event.modifyString(str.substring(0, 15))
+//                    if (str.length > 15) event.cancel()
 //                    println("string: $str ${str.toIntOrNull()}")
 //                    if (event.string.toFloatOrNull() == null) event.cancel()
                 }
+
+                maxWidth(200.px)
             }
         }
     )

@@ -3,7 +3,6 @@ package com.github.stivais.aurora.elements.impl
 import com.github.stivais.aurora.color.Color
 import com.github.stivais.aurora.constraints.Constraint
 import com.github.stivais.aurora.constraints.Positions
-import com.github.stivais.aurora.constraints.impl.measurements.Undefined
 import com.github.stivais.aurora.elements.AuroraDSL
 import com.github.stivais.aurora.elements.Element
 import com.github.stivais.aurora.elements.ElementScope
@@ -34,7 +33,7 @@ open class Text(
     override fun prePosition() {
         if (previousHeight != height) {
             previousHeight = height
-            if (constraints.width is Undefined) width = getTextWidth()
+            if (constraints.width.undefined()) width = getTextWidth()
         }
     }
 

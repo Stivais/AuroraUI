@@ -2,7 +2,6 @@ package com.github.stivais.aurora.elements.impl.layout
 
 import com.github.stivais.aurora.constraints.Constraint
 import com.github.stivais.aurora.constraints.Constraints
-import com.github.stivais.aurora.constraints.impl.measurements.Undefined
 import com.github.stivais.aurora.constraints.impl.size.Bounding
 import com.github.stivais.aurora.constraints.impl.size.Copying
 import com.github.stivais.aurora.dsl.size
@@ -31,7 +30,7 @@ class Row(
         val padding = padding?.calculateSize(this, horizontal = true) ?: 0f
         var increment = 0f
         children?.loop {
-            if (it.constraints.x is Undefined) {
+            if (it.constraints.x.undefined()) {
                 it.internalX = increment
                 increment += it.width + if (it is Divider) 0f else padding
             }

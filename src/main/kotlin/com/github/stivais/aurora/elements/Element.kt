@@ -6,7 +6,6 @@ import com.github.stivais.aurora.AuroraUI
 import com.github.stivais.aurora.color.Color
 import com.github.stivais.aurora.constraints.Constraint
 import com.github.stivais.aurora.constraints.Constraints
-import com.github.stivais.aurora.constraints.impl.measurements.Undefined
 import com.github.stivais.aurora.constraints.impl.positions.Center
 import com.github.stivais.aurora.events.AuroraEvent
 import com.github.stivais.aurora.events.Lifetime
@@ -274,8 +273,8 @@ abstract class Element(
         element.parent = this
         element.constraints.apply {
             val (newX, newY) = getDefaultPositions()
-            if (x is Undefined) x = newX
-            if (y is Undefined) y = newY
+            if (x.undefined()) x = newX
+            if (y.undefined()) y = newY
         }
         element.ui = ui
         redraw = true

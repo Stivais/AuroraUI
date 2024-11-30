@@ -30,8 +30,8 @@ abstract class Layout(
 ) : BlankElement(constraints) {
 
     init {
-        if (constraints.width is Undefined) constraints.width = Bounding
-        if (constraints.height is Undefined) constraints.height = Bounding
+        if (constraints.width.undefined()) constraints.width = Bounding
+        if (constraints.height.undefined()) constraints.height = Bounding
     }
 
     final override fun getDefaultPositions() = Pair(Undefined, Undefined)

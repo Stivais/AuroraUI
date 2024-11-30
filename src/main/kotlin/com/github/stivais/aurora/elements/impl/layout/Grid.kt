@@ -2,7 +2,6 @@ package com.github.stivais.aurora.elements.impl.layout
 
 import com.github.stivais.aurora.constraints.Constraint
 import com.github.stivais.aurora.constraints.Constraints
-import com.github.stivais.aurora.constraints.impl.measurements.Undefined
 import com.github.stivais.aurora.elements.Layout
 import com.github.stivais.aurora.utils.loop
 
@@ -17,7 +16,7 @@ class Grid(
         var currX = 0f
         var currY = 0f
         children?.loop {
-            if (it.constraints.x is Undefined && it.constraints.y is Undefined) {
+            if (it.constraints.x.undefined() && it.constraints.y.undefined()) {
                 if (currX + it.width + padding > width) {
                     currX = 0f
                     currY += it.height + padding

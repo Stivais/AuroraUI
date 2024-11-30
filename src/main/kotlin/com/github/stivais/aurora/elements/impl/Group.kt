@@ -12,7 +12,7 @@ import com.github.stivais.aurora.elements.BlankElement
  */
 class Group(constraints: Constraints) : BlankElement(constraints) {
     init {
-        if (constraints.width is Undefined) constraints.width = Bounding
-        if (constraints.height is Undefined) constraints.height = Bounding
+        if (constraints.width.undefined()) constraints.width = Bounding
+        if (constraints.height.undefined()) constraints.height = Bounding
     }
 }

@@ -2,7 +2,6 @@ package com.github.stivais.aurora.elements.impl.layout
 
 import com.github.stivais.aurora.constraints.Constraint
 import com.github.stivais.aurora.constraints.Constraints
-import com.github.stivais.aurora.constraints.impl.measurements.Undefined
 import com.github.stivais.aurora.constraints.impl.size.Bounding
 import com.github.stivais.aurora.constraints.impl.size.Copying
 import com.github.stivais.aurora.dsl.size
@@ -30,8 +29,9 @@ class Column(
     override fun prePosition() {
         val paddingY = padding?.calculateSize(this, horizontal = false) ?: 0f
         var increment = 0f
+
         children?.loop {
-            if (it.constraints.y is Undefined) {
+            if (it.constraints.y.undefined()) {
                 it.internalY = increment
                 increment += it.height + if (it is Divider) 0f else paddingY
             }
