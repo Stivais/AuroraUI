@@ -24,7 +24,8 @@ fun main() {
             ).scope {
                 onTextChanged { event ->
                     val str = event.string
-                    println("string: $str ${str.toIntOrNull()}")
+                    if (str.length > 15) event.cancel()
+//                    println("string: $str ${str.toIntOrNull()}")
 //                    if (event.string.toFloatOrNull() == null) event.cancel()
                 }
             }

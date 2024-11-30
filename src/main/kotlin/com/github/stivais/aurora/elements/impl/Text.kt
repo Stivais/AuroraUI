@@ -34,12 +34,16 @@ open class Text(
     override fun prePosition() {
         if (previousHeight != height) {
             previousHeight = height
-            if (constraints.width is Undefined) width = renderer.textWidth(text, height, font)
+            if (constraints.width is Undefined) width = getTextWidth()
         }
     }
 
     override fun draw() {
         renderer.text(text, x, y, height, color!!.rgba, font)
+    }
+
+    open fun getTextWidth(): Float {
+        return renderer.textWidth(text, height, font)
     }
 
     companion object {

@@ -13,12 +13,13 @@ import com.github.stivais.aurora.events.Keyboard
 import com.github.stivais.aurora.events.Mouse
 import com.github.stivais.aurora.input.Keys
 import com.github.stivais.aurora.utils.dropAt
+import com.github.stivais.aurora.utils.multiply
 import com.github.stivais.aurora.utils.removeRangeSafe
 import com.github.stivais.aurora.utils.substringSafe
 
 class TextInput(
     string: String,
-    placeholder: String,
+    private val placeholder: String,
     positions: Positions,
     size: Constraint.Size
 ) : Text(string, AuroraUI.defaultFont, Color.WHITE, positions, size) {
@@ -30,7 +31,7 @@ class TextInput(
             accept(event)
             if (!event.cancelled) {
                 field = value
-                redraw()
+                parent?.redraw()
                 previousHeight = 0f
             }
         }
@@ -49,8 +50,12 @@ class TextInput(
                 renderer.rect(cx, y, selectionWidth, height, Color.RGB(0, 0, 255, 0.5f).rgba)
             }
         }
-//        renderer.hollowRect(x - 5, y - 5, width + 10, height + 10, 1f, Color.WHITE.rgba)
-        super.draw()
+        renderer.hollowRect(x - 5, y - 5, width + 10, height + 10, 1f, Color.WHITE.rgba)
+        if (text.isEmpty()) {
+            renderer.text(placeholder, x, y, height, color!!.rgba.multiply(0.8f), font)
+        } else {
+            super.draw()
+        }
     }
 
     init {
@@ -119,6 +124,9 @@ class TextInput(
                        selection = 0
                        caret = text.length
                    }
+                   'w', 'W' -> {
+                       selectWord()
+                   }
                }
             } else {
                 insert(char.toString())
@@ -177,6 +185,10 @@ class TextInput(
             }
             updateCaretPosition()
         }
+    }
+
+    override fun getTextWidth(): Float {
+        return if (text.isEmpty()) renderer.textWidth(placeholder, height, font) else super.getTextWidth()
     }
 
     /**
