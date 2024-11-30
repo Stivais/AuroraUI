@@ -4,6 +4,7 @@ import com.github.stivais.aurora.AuroraUI
 import com.github.stivais.aurora.color.Color
 import com.github.stivais.aurora.constraints.Constraint
 import com.github.stivais.aurora.constraints.Positions
+import com.github.stivais.aurora.dsl.registerEventUnit
 import com.github.stivais.aurora.elements.AuroraDSL
 import com.github.stivais.aurora.elements.ElementScope
 import com.github.stivais.aurora.events.AuroraEvent
@@ -57,10 +58,10 @@ class TextInput(
         var clickCount = 1
         var lastClickTime = 0L
 
-        registerEvent(Focused.Lost) {
+        registerEventUnit(Focused.Lost) {
             clearSelection()
         }
-        registerEvent(Mouse.Clicked(0)) {
+        registerEventUnit(Mouse.Clicked(0)) {
             if (ui.eventManager.focused != this) {
                 ui.focus(this)
             }
@@ -86,18 +87,18 @@ class TextInput(
                 4 -> clickCount = 0
             }
         }
-        registerEvent(Mouse.Released(0)) {
+        registerEventUnit(Mouse.Released(0)) {
             dragging = false
         }
-        registerEvent(Mouse.Moved) {
+        registerEventUnit(Mouse.Moved) {
             if (dragging) {
                 caretFromMouse()
             }
         }
 
-        registerEvent(Keyboard.CharTyped()) { (char, mods) ->
+        registerEventUnit(Keyboard.CharTyped()) { (char, mods) ->
             if (mods.hasControl && !mods.hasShift) {
-                println("Hi has control")
+
                when (char) {
                    'v', 'V' -> {
                        val clipboard = ui.window?.getClipboard()
@@ -124,7 +125,7 @@ class TextInput(
             }
             updateCaretPosition()
         }
-        registerEvent(Keyboard.KeyTyped()) { (key, mods) ->
+        registerEventUnit(Keyboard.KeyTyped()) { (key, mods) ->
             when (key) {
                 Keys.BACKSPACE -> {
                     if (selection != caret) {
@@ -306,7 +307,7 @@ class TextInput(
         @AuroraDSL
         inline fun ElementScope<TextInput>.onTextChanged(crossinline block: (TextChanged) -> Unit) {
             element.registerEvent(TextChanged()) {
-                block(it)
+                block(it); false
             }
         }
      }

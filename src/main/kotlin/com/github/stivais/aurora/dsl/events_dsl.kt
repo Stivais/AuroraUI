@@ -3,11 +3,9 @@
 
 package com.github.stivais.aurora.dsl
 
+import com.github.stivais.aurora.elements.Element
 import com.github.stivais.aurora.elements.ElementScope
-import com.github.stivais.aurora.events.Focused
-import com.github.stivais.aurora.events.Keyboard
-import com.github.stivais.aurora.events.Lifetime
-import com.github.stivais.aurora.events.Mouse
+import com.github.stivais.aurora.events.*
 import kotlin.experimental.ExperimentalTypeInference
 
 //
@@ -37,7 +35,7 @@ fun ElementScope<*>.onClick(button: Int = 0, block: (Mouse.Clicked) -> Boolean) 
 @JvmName("onClickUnit")
 @OverloadResolutionByLambdaReturnType
 inline fun ElementScope<*>.onClick(button: Int = 0, crossinline block: (Mouse.Clicked) -> Unit) {
-    element.registerEvent(Mouse.Clicked(button), block)
+    element.registerEventUnit(Mouse.Clicked(button), block)
 }
 
 
@@ -47,7 +45,7 @@ inline fun ElementScope<*>.onClick(button: Int = 0, crossinline block: (Mouse.Cl
  * Always returns false.
  */
 inline fun ElementScope<*>.onRelease(button: Int = 0, crossinline block: (Mouse.Released) -> Unit) {
-    element.registerEvent(Mouse.Released(button)) { block(it); false }
+    element.registerEventUnit(Mouse.Released(button), block)
 }
 
 /**
@@ -70,7 +68,7 @@ fun ElementScope<*>.onScroll(block: (Mouse.Scrolled) -> Boolean) {
 @JvmName("onScrollUnit")
 @OverloadResolutionByLambdaReturnType
 inline fun ElementScope<*>.onScroll(crossinline block: (Mouse.Scrolled) -> Unit) {
-    element.registerEvent(Mouse.Scrolled(0f)) { block(it); false }
+    element.registerEventUnit(Mouse.Scrolled(0f), block)
 }
 
 /**
@@ -91,7 +89,7 @@ fun ElementScope<*>.onMouseMove(block: (Mouse.Moved) -> Boolean) {
 @JvmName("_onMouseMove")
 @OverloadResolutionByLambdaReturnType
 inline fun ElementScope<*>.onMouseMove(crossinline block: (Mouse.Moved) -> Unit) {
-    element.registerEvent(Mouse.Moved) { block(it); false }
+    element.registerEventUnit(Mouse.Moved, block)
 }
 
 /**
@@ -146,7 +144,7 @@ fun ElementScope<*>.onKeycodePressed(block: (Keyboard.CodeTyped) -> Boolean) {
  * Returns false by default.
  */
 inline fun ElementScope<*>.onAdd(crossinline block: (Lifetime.Initialized) -> Unit) {
-    element.registerEvent(Lifetime.Initialized) { block(it); false }
+    element.registerEventUnit(Lifetime.Initialized, block)
 }
 
 /**
@@ -155,7 +153,7 @@ inline fun ElementScope<*>.onAdd(crossinline block: (Lifetime.Initialized) -> Un
  * Returns false by default.
  */
 inline fun ElementScope<*>.onRemove(crossinline block: (Lifetime.Uninitialized) -> Unit) {
-    element.registerEvent(Lifetime.Uninitialized) { block(it); false }
+    element.registerEventUnit(Lifetime.Uninitialized, block)
 }
 
 //-----------------//
@@ -168,7 +166,7 @@ inline fun ElementScope<*>.onRemove(crossinline block: (Lifetime.Uninitialized) 
  * Returns false by default.
  */
 inline fun ElementScope<*>.onFocus(crossinline block: (Focused.Gained) -> Unit) {
-    element.registerEvent(Focused.Gained) { block(it); false }
+    element.registerEventUnit(Focused.Gained, block)
 }
 
 /**
@@ -177,7 +175,7 @@ inline fun ElementScope<*>.onFocus(crossinline block: (Focused.Gained) -> Unit) 
  * Returns false by default.
  */
 inline fun ElementScope<*>.onFocusLost(crossinline block: (Focused.Lost) -> Unit) {
-    element.registerEvent(Focused.Lost) { block(it); false }
+    element.registerEventUnit(Focused.Lost, block)
 }
 
 /**
@@ -188,4 +186,20 @@ inline fun ElementScope<*>.onFocusLost(crossinline block: (Focused.Lost) -> Unit
 inline fun ElementScope<*>.onFocusChanged(crossinline block: () -> Unit) {
     element.registerEvent(Focused.Gained) { block(); false }
     element.registerEvent(Focused.Lost) { block(); false }
+}
+
+/**
+ * Registers an event listener, which always returns false.
+ *
+ * If the event inherits [AuroraEvent.NonSpecific], it's [Class] will be added to [events][Element.events].
+ *
+ * If the event isn't a lifetime event, it will mark [acceptsInput][Element.acceptsInput] as true.
+ *
+ * @see Element.registerEvent
+ */
+inline fun <E : AuroraEvent> Element.registerEventUnit(event: E, crossinline block: (E) -> Unit) {
+    registerEvent(event) {
+        block(it)
+        false
+    }
 }

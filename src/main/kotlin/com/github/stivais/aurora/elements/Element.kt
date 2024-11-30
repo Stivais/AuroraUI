@@ -338,25 +338,6 @@ abstract class Element(
     }
 
     /**
-     * Registers an event listener, which always returns false.
-     *
-     * If the event inherits [AuroraEvent.NonSpecific], it's [Class] will be added to [events].
-     *
-     * If the event isn't a lifetime event, it will mark [acceptsInput] as true.
-     *
-     * @see registerEvent
-     */
-    // todo: fix fake errors in events_dsl caused by this
-    @JvmName("registerEventUnit")
-    @OverloadResolutionByLambdaReturnType
-    inline fun <E : AuroraEvent> registerEvent(event: E, crossinline block: (E) -> Unit) {
-        registerEvent(event) {
-            block(it)
-            false
-        }
-    }
-
-    /**
      * Registers a [Transform] to this element.
      */
     fun addTransform(transform: Transform) {
