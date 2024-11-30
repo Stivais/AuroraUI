@@ -6,7 +6,7 @@ import com.github.stivais.aurora.constraints.impl.measurements.Undefined
 import com.github.stivais.aurora.constraints.impl.size.Bounding
 import com.github.stivais.aurora.constraints.impl.size.Copying
 import com.github.stivais.aurora.dsl.size
-import com.github.stivais.aurora.elements.DSL
+import com.github.stivais.aurora.elements.AuroraDSL
 import com.github.stivais.aurora.elements.ElementScope
 import com.github.stivais.aurora.elements.Layout
 import com.github.stivais.aurora.utils.loop
@@ -44,7 +44,7 @@ class Column(
          *
          * Acts as a section, to place elements in.
          */
-        @DSL
+        @AuroraDSL
         fun ElementScope<Column>.sectionRow(
             size: Constraint.Size = Bounding,
             padding: Constraint.Size? = null,

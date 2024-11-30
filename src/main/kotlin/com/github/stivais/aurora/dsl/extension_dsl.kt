@@ -1,4 +1,4 @@
-@file:Suppress("unused", "nothing_to_inline")
+@file:Suppress("unused")
 
 package com.github.stivais.aurora.dsl
 

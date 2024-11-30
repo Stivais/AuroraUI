@@ -4,7 +4,7 @@ import com.github.stivais.aurora.color.Color
 import com.github.stivais.aurora.constraints.Constraint
 import com.github.stivais.aurora.constraints.Positions
 import com.github.stivais.aurora.constraints.impl.measurements.Undefined
-import com.github.stivais.aurora.elements.DSL
+import com.github.stivais.aurora.elements.AuroraDSL
 import com.github.stivais.aurora.elements.Element
 import com.github.stivais.aurora.elements.ElementScope
 import com.github.stivais.aurora.renderer.data.Font
@@ -29,7 +29,7 @@ open class Text(
             previousHeight = 0f
         }
 
-    private var previousHeight = 0f
+    protected var previousHeight = 0f
 
     override fun prePosition() {
         if (previousHeight != height) {
@@ -43,7 +43,7 @@ open class Text(
     }
 
     companion object {
-        @DSL
+        @AuroraDSL
         var ElementScope<Text>.string
             get() = element.text
             set(value) { element.text = value }

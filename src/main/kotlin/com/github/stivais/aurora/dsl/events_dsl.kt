@@ -37,7 +37,7 @@ fun ElementScope<*>.onClick(button: Int = 0, block: (Mouse.Clicked) -> Boolean) 
 @JvmName("onClickUnit")
 @OverloadResolutionByLambdaReturnType
 inline fun ElementScope<*>.onClick(button: Int = 0, crossinline block: (Mouse.Clicked) -> Unit) {
-    element.registerEvent(Mouse.Clicked(button)) { block(it); false }
+    element.registerEvent(Mouse.Clicked(button), block)
 }
 
 

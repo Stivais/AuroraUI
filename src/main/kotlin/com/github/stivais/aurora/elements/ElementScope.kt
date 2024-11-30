@@ -37,7 +37,7 @@ open class ElementScope<E : Element>(val element: E) {
         element.redraw()
     }
 
-    @DSL
+    @AuroraDSL
     inline fun block(
         constraints: Constraints,
         color: Color,
@@ -45,7 +45,7 @@ open class ElementScope<E : Element>(val element: E) {
         block: ElementScope<Block>.() -> Unit = {}
     ) = Block(constraints, color, radius).scope(block)
 
-    @DSL
+    @AuroraDSL
     inline fun block(
         constraints: Constraints,
         colors: Pair<Color, Color>,
@@ -54,7 +54,7 @@ open class ElementScope<E : Element>(val element: E) {
         block: ElementScope<Block.Gradient>.() -> Unit = {}
     ) = Block.Gradient(constraints, colors.first, colors.second,gradient, radius).scope(block)
 
-    @DSL
+    @AuroraDSL
     inline fun text(
         string: String,
         font: Font = AuroraUI.defaultFont,
@@ -64,7 +64,7 @@ open class ElementScope<E : Element>(val element: E) {
         block: ElementScope<Text>.() -> Unit = {}
     ) = Text(string, font, color, pos, size).scope(block)
 
-    @DSL
+    @AuroraDSL
     inline fun image(
         image: Image,
         constraints: Constraints,
@@ -72,27 +72,27 @@ open class ElementScope<E : Element>(val element: E) {
         block: ElementScope<ImageElement>.() -> Unit = {}
     ) = ImageElement(image, constraints, radius).scope(block)
 
-    @DSL
+    @AuroraDSL
     inline fun column(
         constraints: Constraints = size(Bounding, Bounding),
         padding: Constraint.Size? = null,
         block: ElementScope<Column>.() -> Unit = {}
     ) = Column(constraints, padding).scope(block)
 
-    @DSL
+    @AuroraDSL
     inline fun row(
         constraints: Constraints = size(Bounding, Bounding),
         padding: Constraint.Size? = null,
         block: ElementScope<Row>.() -> Unit = {}
     ) = Row(constraints, padding).scope(block)
 
-    @DSL
+    @AuroraDSL
     inline fun group(
         constraints: Constraints = size(Bounding, Bounding),
         block: ElementScope<Group>.() -> Unit = {}
     ) = Group(constraints).scope(block)
 
-    @DSL
+    @AuroraDSL
     inline fun scrollable(
         constraints: Constraints = size(Bounding, Bounding),
         block: ElementScope<Scrollable>.() -> Unit
@@ -127,4 +127,4 @@ open class ElementScope<E : Element>(val element: E) {
  * customize color (inside your IDE) of functions which use it.
  */
 @DslMarker
-annotation class DSL
+annotation class AuroraDSL

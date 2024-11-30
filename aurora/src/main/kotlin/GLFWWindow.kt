@@ -1,6 +1,7 @@
 package com.github.stivais
 
 import com.github.stivais.aurora.AuroraUI
+import com.github.stivais.aurora.Window
 import com.github.stivais.aurora.input.Keys
 import com.github.stivais.aurora.input.Modifier
 import org.lwjgl.glfw.Callbacks
@@ -15,7 +16,7 @@ class GLFWWindow(
     title: String,
     width: Int,
     height: Int,
-) {
+) : Window {
 
     private var width = width
     private var height = height
@@ -81,7 +82,7 @@ class GLFWWindow(
             }
 
             val key = keyMap[keycode]
-            if (key != null && action == GLFW_PRESS && ui.eventManager.onKeyTyped(key)) {
+            if (key != null && action != GLFW_RELEASE && ui.eventManager.onKeyTyped(key)) {
                 return@glfwSetKeyCallback
             }
             val mods = modifierMap[keycode]
@@ -98,7 +99,7 @@ class GLFWWindow(
 
     fun open(ui: AuroraUI) {
         callbacks(ui)
-        ui.initialize(width, height)
+        ui.initialize(width, height, this)
         while (!glfwWindowShouldClose(handle)) {
             glViewport(0, 0, width, height)
             glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
@@ -114,6 +115,14 @@ class GLFWWindow(
         Callbacks.glfwFreeCallbacks(handle)
         glfwTerminate()
         glfwDestroyWindow(handle)
+    }
+
+    override fun getClipboard(): String? {
+        return glfwGetClipboardString(handle)
+    }
+
+    override fun setClipboard(string: String?) {
+        if (string != null) glfwSetClipboardString(handle, string as CharSequence)
     }
 
     private val keyMap = hashMapOf(

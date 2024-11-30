@@ -3,7 +3,7 @@ package com.github.stivais.aurora.elements.impl
 import com.github.stivais.aurora.color.Color
 import com.github.stivais.aurora.constraints.Constraint
 import com.github.stivais.aurora.constraints.Constraints
-import com.github.stivais.aurora.elements.DSL
+import com.github.stivais.aurora.elements.AuroraDSL
 import com.github.stivais.aurora.elements.Element
 import com.github.stivais.aurora.elements.ElementScope
 import com.github.stivais.aurora.renderer.data.Radii
@@ -36,7 +36,7 @@ open class Block(
         /**
          * Adds an outline to a [Block]
          */
-        @DSL
+        @AuroraDSL
         fun ElementScope<Block>.outline(color: Color, thickness: Constraint.Measurement): ElementScope<Block> {
             element.outline = color
             element.thickness = thickness

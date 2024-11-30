@@ -60,7 +60,7 @@ abstract class Layout(
          *
          * It isn't supported for [Grid].
          */
-        @DSL
+        @AuroraDSL
         fun <E : Layout> ElementScope<E>.divider(size: Constraint.Size) {
             val divider = when (element) {
                 is Column -> Divider(height = size)
@@ -77,7 +77,7 @@ abstract class Layout(
          *
          * It isn't supported for [Grid].
          */
-        @DSL
+        @AuroraDSL
         fun <E : Layout> ElementScope<E>.section(
             size: Constraint.Size,
             block: ElementScope<Group>.() -> Unit = {}

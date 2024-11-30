@@ -1,6 +1,10 @@
 import com.github.stivais.GLFWWindow
 import com.github.stivais.NVGRenderer
 import com.github.stivais.aurora.dsl.Aurora
+import com.github.stivais.aurora.dsl.at
+import com.github.stivais.aurora.dsl.px
+import com.github.stivais.aurora.elements.impl.TextInput
+import com.github.stivais.aurora.elements.impl.TextInput.Companion.onTextChanged
 
 
 fun main() {
@@ -12,13 +16,18 @@ fun main() {
 
     window.open(
         Aurora(renderer = NVGRenderer) {
-//            TextInput(
-//                "Hello world",
-//                AuroraUI.defaultFont,
-//                Color.WHITE,
-//                at(),
-//                75.px
-//            ).add()
+            TextInput(
+                "hello world",
+                "placeholder",
+                at(),
+                75.px
+            ).scope {
+                onTextChanged { event ->
+                    val str = event.string
+                    println("string: $str ${str.toIntOrNull()}")
+//                    if (event.string.toFloatOrNull() == null) event.cancel()
+                }
+            }
         }
     )
 }

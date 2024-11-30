@@ -5,8 +5,8 @@ import com.github.stivais.aurora.constraints.Constraints
 import com.github.stivais.aurora.constraints.impl.measurements.Pixel
 import com.github.stivais.aurora.constraints.impl.size.Bounding
 import com.github.stivais.aurora.dsl.seconds
+import com.github.stivais.aurora.elements.AuroraDSL
 import com.github.stivais.aurora.elements.BlankElement
-import com.github.stivais.aurora.elements.DSL
 import com.github.stivais.aurora.elements.Element
 import com.github.stivais.aurora.elements.ElementScope
 
@@ -79,7 +79,7 @@ class Scrollable(
          *
          * Also tells the element to [redraw].
          */
-        @DSL
+        @AuroraDSL
         fun ElementScope<Scrollable>.scroll(
             amount: Float,
             duration: Float = 0.15.seconds,

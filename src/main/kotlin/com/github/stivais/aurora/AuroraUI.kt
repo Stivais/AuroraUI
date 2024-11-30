@@ -14,10 +14,14 @@ import com.github.stivais.aurora.utils.loopRemoveIf
 class AuroraUI(val renderer: Renderer) {
 
     /**
-     * Marker for if this ui is initialized,
-     * to prevent [initialize] and [close] being run multiple times in a row.
+     * Reference to the window rendering this UI.
+     *
+     * It isn't required,
+     * however it contains function which cannot be directly implemented inside of [AuroraUI].
+     *
+     * Can also be used to see if a UI is initialized.
      */
-    private var initialized = false
+    var window: Window? = null
 
     /**
      * The root element, all rendering and events start from here.
@@ -50,19 +54,16 @@ class AuroraUI(val renderer: Renderer) {
 
     /**
      * Sets up this UIs width and height, and initialize all the initial elements.
-     *
-     * If [initialized] is true it will not do anything.
      */
-    fun initialize(width: Int, height: Int) {
-        if (!initialized) {
-            initialized = true
-            main.constraints.width = width.px
-            main.constraints.height = height.px
+    fun initialize(width: Int, height: Int, window: Window) {
+        this.window = window
 
-            main.size()
-            main.positionChildren()
-            main.clip()
-        }
+        main.constraints.width = width.px
+        main.constraints.height = height.px
+
+        main.size()
+        main.positionChildren()
+        main.clip()
     }
 
     /**
@@ -85,12 +86,10 @@ class AuroraUI(val renderer: Renderer) {
      * Posts [Lifetime.Uninitialized] to all elements.
      *
      * Use this whenever your UI is closed.
-     *
-     * If [initialized] is true it will do nothing.
      */
     fun close() {
-        if (initialized) {
-            initialized = false
+        if (window != null) {
+            window = null
             eventManager.postToAll(Lifetime.Uninitialized, main)
         }
     }

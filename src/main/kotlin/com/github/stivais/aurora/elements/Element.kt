@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalTypeInference::class)
+
 package com.github.stivais.aurora.elements
 
 import com.github.stivais.aurora.AuroraUI
@@ -11,6 +13,7 @@ import com.github.stivais.aurora.events.Lifetime
 import com.github.stivais.aurora.events.Mouse
 import com.github.stivais.aurora.transforms.Transform
 import com.github.stivais.aurora.utils.loop
+import kotlin.experimental.ExperimentalTypeInference
 
 /**
  * # Element
@@ -319,18 +322,38 @@ abstract class Element(
     }
 
     /**
-     * Registers an event to this element.
+     * Registers an event listener to this element.
      *
      * If the event inherits [AuroraEvent.NonSpecific], it's [Class] will be added to [events].
      *
      * If the event isn't a lifetime event, it will mark [acceptsInput] as true.
      */
     @Suppress("UNCHECKED_CAST")
+    @OverloadResolutionByLambdaReturnType
     fun <E : AuroraEvent> registerEvent(event: E, block: (E) -> Boolean) {
         if (event !is Lifetime) acceptsInput = true
         if (events == null) events = hashMapOf()
         val key: Any = if (event is AuroraEvent.NonSpecific) event::class.java else event
         events!!.getOrPut(key) { arrayListOf() }.add(block as (AuroraEvent) -> Boolean)
+    }
+
+    /**
+     * Registers an event listener, which always returns false.
+     *
+     * If the event inherits [AuroraEvent.NonSpecific], it's [Class] will be added to [events].
+     *
+     * If the event isn't a lifetime event, it will mark [acceptsInput] as true.
+     *
+     * @see registerEvent
+     */
+    // todo: fix fake errors in events_dsl caused by this
+    @JvmName("registerEventUnit")
+    @OverloadResolutionByLambdaReturnType
+    inline fun <E : AuroraEvent> registerEvent(event: E, crossinline block: (E) -> Unit) {
+        registerEvent(event) {
+            block(it)
+            false
+        }
     }
 
     /**
