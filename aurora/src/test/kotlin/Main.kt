@@ -1,11 +1,8 @@
 import com.github.stivais.GLFWWindow
 import com.github.stivais.NVGRenderer
 import com.github.stivais.aurora.dsl.Aurora
-import com.github.stivais.aurora.dsl.at
 import com.github.stivais.aurora.dsl.px
-import com.github.stivais.aurora.elements.impl.TextInput
-import com.github.stivais.aurora.elements.impl.TextInput.Companion.maxWidth
-import com.github.stivais.aurora.elements.impl.TextInput.Companion.onTextChanged
+import com.github.stivais.aurora.elements.impl.Text.Companion.shadow
 
 
 fun main() {
@@ -17,22 +14,40 @@ fun main() {
 
     window.open(
         Aurora(renderer = NVGRenderer) {
-            TextInput(
-                "hello world",
-                "placeholder",
-                at(),
-                50.px
-            ).scope {
-                onTextChanged { event ->
-                    val str = event.string
-                    if (str.length > 15) event.modifyString(str.substring(0, 15))
-//                    if (str.length > 15) event.cancel()
-//                    println("string: $str ${str.toIntOrNull()}")
-//                    if (event.string.toFloatOrNull() == null) event.cancel()
-                }
+//            onClick(nonSpecific = true) {
+//                if (focused()) {
+//                    println("onClickNS ${it.button}")
+//                    ui.unfocus()
+//                    true
+//                } else false
+//            }
+//            onClick {
+//                if (!focused()) {
+//                    println("onClick")
+//                    ui.focus(element)
+//                }
+//            }
 
-                maxWidth(200.px)
+            column {
+                repeat(5) {
+                    text("Hi", size = (it * 50).px).shadow = true
+                }
             }
+
+//            textInput(
+//                "hello world",
+//                "placeholder",
+//                AuroraUI.defaultFont,
+//                Color.WHITE,
+//                size = 50.px
+//            ) {
+//                shadow = true
+//
+//                onTextChanged { event ->
+//                    val str = event.string
+//                    if (str.length > 15) event.string = str.substring(0, 15)
+//                }
+//            }
         }
     )
 }

@@ -39,9 +39,15 @@ interface AuroraEvent {
 sealed interface Mouse : AuroraEvent {
 
     /**
-     * Gets posted when the mouse is clicked.
+     * Gets posted when the mouse is clicked with the specified button.
      */
-    data class Clicked(val button: Int): Mouse
+    data class Clicked(val button: Int): Mouse {
+
+        /**
+         * Alternative for [Clicked], which accepts any button.
+         */
+        data class NonSpecific(val button: Int) : Mouse, AuroraEvent.NonSpecific
+    }
 
     /**
      * Gets posted when the mouse is released.

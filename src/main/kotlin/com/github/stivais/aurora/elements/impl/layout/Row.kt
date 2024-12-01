@@ -30,7 +30,7 @@ class Row(
         val padding = padding?.calculateSize(this, horizontal = true) ?: 0f
         var increment = 0f
         children?.loop {
-            if (it.constraints.x.undefined()) {
+            if (it.constraints.x.undefined() && it.enabled) {
                 it.internalX = increment
                 increment += it.width + if (it is Divider) 0f else padding
             }

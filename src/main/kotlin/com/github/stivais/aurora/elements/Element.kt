@@ -27,7 +27,7 @@ abstract class Element(
 ) {
 
     /**
-     * Reference to the UI instance holding this element
+     * Reference to the UI instance holding this element.
      */
     lateinit var ui: AuroraUI
 
@@ -56,14 +56,14 @@ abstract class Element(
     private var events: HashMap<Any, ArrayList<(AuroraEvent) -> Boolean>>? = null
 
     /**
-     * Flag to indicate if this element contains any input-related events
+     * Flag to indicate if this element contains any input-related events.
      */
     var acceptsInput = false
 
     /**
-     * Flag to indicate if the mouse is hovered over this element
+     * Flag to indicate if the mouse is hovered over this element.
      *
-     * This also handles the [Mouse.Entered] and [Mouse.Exited] events
+     * This also handles the [Mouse.Entered] and [Mouse.Exited] events.
      */
     var hovered: Boolean = false
         set(value) {
@@ -71,6 +71,11 @@ abstract class Element(
             if (value) accept(Mouse.Entered) else accept(Mouse.Exited)
             field = value
         }
+
+    /**
+     * Flag to indicate if the mouse has pressed this element.
+     */
+    var pressed: Boolean = false
 
     var x = 0f
     var y = 0f
@@ -147,7 +152,6 @@ abstract class Element(
             children?.loop {
                 it.render()
             }
-//            if (hovered) renderer.hollowRect(x, y, width, height, 1f, Color.WHITE.rgba)
             if (scissors) renderer.popScissor()
             renderer.pop()
         }
@@ -299,10 +303,14 @@ abstract class Element(
      */
     fun accept(event: AuroraEvent): Boolean {
         if (events != null) {
-            // todo: figure out a way for nonspecific mouse events to work alongside regular while using same class
             val key: Any = if (event is AuroraEvent.NonSpecific) event::class.java else event
             (events!![key] ?: return false).loop { if (it(event)) return true }
-            if (event is Lifetime) events!!.remove(key)
+
+            when (event) {
+                is Mouse.Clicked -> pressed = true
+                is Mouse.Released -> pressed = false
+                is Lifetime -> events!!.remove(key)
+            }
         }
         return false
     }

@@ -31,7 +31,7 @@ class Column(
         var increment = 0f
 
         children?.loop {
-            if (it.constraints.y.undefined()) {
+            if (it.constraints.y.undefined() && it.enabled) {
                 it.internalY = increment
                 increment += it.height + if (it is Divider) 0f else paddingY
             }

@@ -1,5 +1,5 @@
 @file:OptIn(ExperimentalTypeInference::class)
-@file:Suppress("unused")
+@file:Suppress("unused", "unused_parameter")
 
 package com.github.stivais.aurora.dsl
 
@@ -38,6 +38,29 @@ inline fun ElementScope<*>.onClick(button: Int = 0, crossinline block: (Mouse.Cl
     element.registerEventUnit(Mouse.Clicked(button), block)
 }
 
+
+/**
+ * Registers [Mouse.Clicked.NonSpecific] event with a specified button.
+ *
+ * Has an optional return value.
+ */
+@Suppress
+@OverloadResolutionByLambdaReturnType
+fun ElementScope<*>.onClick(nonSpecific: Boolean, block: (Mouse.Clicked.NonSpecific) -> Boolean) {
+    element.registerEvent(Mouse.Clicked.NonSpecific(0 /* doesn't matter */), block)
+}
+
+
+/**
+ * Registers [Mouse.Clicked.NonSpecific] event with a specified button.
+ *
+ * Returns false by default.
+ */
+@JvmName("onClickNSUnit")
+@OverloadResolutionByLambdaReturnType
+inline fun ElementScope<*>.onClick(nonSpecific: Boolean, crossinline block: (Mouse.Clicked.NonSpecific) -> Unit) {
+    element.registerEventUnit(Mouse.Clicked.NonSpecific(0), block)
+}
 
 /**
  * Registers [Mouse.Released] event with a specified button.

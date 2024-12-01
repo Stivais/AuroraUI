@@ -16,7 +16,7 @@ class Grid(
         var currX = 0f
         var currY = 0f
         children?.loop {
-            if (it.constraints.x.undefined() && it.constraints.y.undefined()) {
+            if (it.constraints.x.undefined() && it.constraints.y.undefined() && it.enabled) {
                 if (currX + it.width + padding > width) {
                     currX = 0f
                     currY += it.height + padding

@@ -98,6 +98,17 @@ open class ElementScope<E : Element>(val element: E) {
         block: ElementScope<Scrollable>.() -> Unit
     ) = Scrollable(constraints).scope(block)
 
+    @AuroraDSL
+    inline fun textInput(
+        string: String = "",
+        placeholder: String = "",
+        font: Font = AuroraUI.defaultFont,
+        color: Color = Color.WHITE,
+        pos: Positions = at(Undefined, Undefined),
+        size: Constraint.Size = 50.percent,
+        block: ElementScope<TextInput>.() -> Unit
+    ) = TextInput(string, placeholder, font, color, pos, size).scope(block)
+
     inline fun <E : Element> E.add() = element.addElement(this)
 
     inline fun <E : Element> E.scope(block: ElementScope<E>.() -> Unit): ElementScope<E> = scope(this, block)

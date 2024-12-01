@@ -20,13 +20,13 @@ import com.github.stivais.aurora.utils.multiply
  *
  * @param block Function to get ran.
  */
-inline fun ElementScope<*>.onDrag(crossinline block: () -> Boolean) {
+inline fun ElementScope<*>.onDrag(button: Int = 0, crossinline block: () -> Boolean) {
     var pressed = false
-    onClick {
+    onClick(button) {
         pressed = true
         block.invoke()
     }
-    onRelease {
+    onRelease(button) {
         pressed = false
     }
     onMouseMove {
@@ -88,7 +88,7 @@ fun ElementScope<*>.draggable(
         clickedY = ui.my - moves.internalY
         moves.moveToTop()
     }
-    onDrag {
+    onDrag(button) {
         var newX = ui.mx - clickedX
         var newY = ui.my - clickedY
         if (coerce) {

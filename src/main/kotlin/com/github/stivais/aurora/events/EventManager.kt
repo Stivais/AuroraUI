@@ -36,16 +36,20 @@ class EventManager(private val ui: AuroraUI) {
 
     fun onMouseClick(button: Int): Boolean {
         mouseDown = true
+        val eventNS = Mouse.Clicked.NonSpecific(button)
         val event = Mouse.Clicked(button)
 
         if (focused != null) {
             if (focused!!.isInside(mouseX, mouseY)) {
-                return focused!!.accept(event)
+                if (focused!!.accept(eventNS)) {
+                    return true
+                }
+                return focused?.accept(event) ?: false
             } else {
                 focused = null
             }
         }
-        return post(event)
+        return post(eventNS) || post(event)
     }
 
     fun onMouseRelease(button: Int) {

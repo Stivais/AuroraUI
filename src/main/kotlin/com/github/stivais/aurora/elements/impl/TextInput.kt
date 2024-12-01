@@ -1,14 +1,19 @@
+@file:Suppress("UNUSED")
+
 package com.github.stivais.aurora.elements.impl
 
-import com.github.stivais.aurora.AuroraUI
 import com.github.stivais.aurora.color.Color
 import com.github.stivais.aurora.constraints.Constraint
 import com.github.stivais.aurora.constraints.Positions
 import com.github.stivais.aurora.dsl.registerEventUnit
 import com.github.stivais.aurora.elements.AuroraDSL
 import com.github.stivais.aurora.elements.ElementScope
-import com.github.stivais.aurora.events.*
+import com.github.stivais.aurora.events.AuroraEvent
+import com.github.stivais.aurora.events.Focused
+import com.github.stivais.aurora.events.Keyboard
+import com.github.stivais.aurora.events.Mouse
 import com.github.stivais.aurora.input.Keys
+import com.github.stivais.aurora.renderer.data.Font
 import com.github.stivais.aurora.utils.dropAt
 import com.github.stivais.aurora.utils.multiply
 import com.github.stivais.aurora.utils.removeRangeSafe
@@ -17,9 +22,11 @@ import com.github.stivais.aurora.utils.substringSafe
 class TextInput(
     string: String,
     private val placeholder: String,
+    font: Font,
+    color: Color,
     positions: Positions,
     size: Constraint.Size
-) : Text(string, AuroraUI.defaultFont, Color.WHITE, positions, size) {
+) : Text(string, font, color, positions, size) {
 
     override var text: String = string
         set(value) {
@@ -39,6 +46,11 @@ class TextInput(
     private var visibleText: String? = null
 
     private var caret = text.length
+        set(value) {
+            if (field == value) return
+            field = value
+            caretBlinkTime = System.currentTimeMillis()
+        }
     private var selection = text.length
 
     private var caretX = 0f
@@ -51,27 +63,37 @@ class TextInput(
      */
     private var textOffset = 0f
 
+    /**
+     * Used to blink the caret every 500ms.
+     */
+    private var caretBlinkTime = System.currentTimeMillis()
+
     override fun draw() {
         var offset = 0f
         if (ui.eventManager.focused == this) {
-            offset = textOffset
-            val x = x + caretX - offset
 
-            renderer.line(x, y, x, y + height, 1f, Color.WHITE.rgba)
+            offset = textOffset
+            val time = System.currentTimeMillis()
+
+            val x = x + caretX - offset
             if (selectionWidth != 0f) renderer.rect(x, y, selectionWidth, height, SELECTION_COLOR)
+
+            if (time - caretBlinkTime < 500) {
+                renderer.line(x, y, x, y + height, 1f, Color.WHITE.rgba)
+            } else if (time - caretBlinkTime > 1000) {
+                caretBlinkTime = System.currentTimeMillis()
+            }
         }
 
         when {
             text.isEmpty() -> {
-                renderer.text(placeholder, x, y, height, color!!.rgba.multiply(0.8f), font)
+                drawText(placeholder, color = color!!.rgba.multiply(0.8f))
             }
-
             visibleText != null -> {
-                renderer.text(visibleText!!, x - offset, y, height, color!!.rgba, font)
+                drawText(visibleText!!, color = color!!.rgba)
             }
-
             else -> {
-                renderer.text(text, x - offset, y, height, color!!.rgba, font)
+                drawText(text, x - offset, color = color!!.rgba)
             }
         }
     }
@@ -83,21 +105,18 @@ class TextInput(
         var clickCount = 1
         var lastClickTime = 0L
 
+        // Todo: implement after position event of sorts
         // compute visible text (requires renderer to be initialized)
-        registerEventUnit(Lifetime.Initialized) {
-            if (!constraints.width.undefined()) {
-                // might be bad practice?? im not sure.
-                size()
-                updateVisibleText()
-            }
-        }
+//        registerEventUnit(Lifetime.Initialized) {
+//              updateVisibleText()
+//        }
         registerEventUnit(Focused.Gained) {
+            caretBlinkTime = System.currentTimeMillis()
             visibleText = null
         }
         registerEventUnit(Focused.Lost) {
             clearSelection()
             textOffset = 0f
-
             // if text is longer than width (if width is defined),
             // it will cut off the visible part of the text with ".." to indicate it continues
             updateVisibleText()
@@ -236,8 +255,15 @@ class TextInput(
         }
     }
 
+    override fun prePosition() {
+        super.prePosition()
+        if (ui.eventManager.focused != this) {
+            updateVisibleText()
+        }
+    }
+
     override fun getTextWidth(): Float {
-        return if (text.isEmpty()) renderer.textWidth(placeholder, height, font) else super.getTextWidth()
+        return if (text.isEmpty()) textWidth(placeholder) else super.getTextWidth()
     }
 
     /**
@@ -275,7 +301,7 @@ class TextInput(
         var currWidth = 0f
 
         for (index in text.indices) {
-            val charWidth = renderer.textWidth(text[index].toString(), height, font)
+            val charWidth = textWidth(text[index].toString())
             if ((currWidth + charWidth / 2) > mx) break
             currWidth += charWidth
             newCaret = index + 1
@@ -299,13 +325,13 @@ class TextInput(
      */
     private fun updateCaretPosition() {
         if (selection != caret) {
-            selectionWidth = renderer.textWidth(text.substringSafe(selection, caret), height, font)
+            selectionWidth = textWidth(text.substringSafe(selection, caret))
             if (selection <= caret) selectionWidth *= -1
         } else selectionWidth = 0f
 
         if (caret != 0) {
             val previousX = caretX
-            caretX = renderer.textWidth(text.substringSafe(0, caret), height, font)
+            caretX = textWidth(text.substringSafe(0, caret))
 
             if (!constraints.width.undefined()) {
                 if (previousX < caretX) {
@@ -314,7 +340,7 @@ class TextInput(
                     }
                 } else {
                     if (caretX - textOffset <= 0f) {
-                        textOffset = renderer.textWidth(text.substringSafe(0, caret - 1), height, font)
+                        textOffset = textWidth(text.substringSafe(0, caret - 1))
                     }
                 }
             }
@@ -368,18 +394,21 @@ class TextInput(
 
     /**
      * Updates [visibleText], which gets used when the [text] is longer than the elements width (only if it defined).
+     *
+     * Only gets activated if [text] isn't empty and the width is not [Undefined][com.github.stivais.aurora.constraints.impl.measurements.Undefined].
      */
     private fun updateVisibleText() {
-        if (text.isNotEmpty()) {
-            val maxWidth = width - renderer.textWidth("....", height, font)
+        if (text.isNotEmpty() && !constraints.width.undefined()) {
+            val maxWidth = width - textWidth("....")
             var isLonger = false
             var visibleLength = 0
 
             for (index in text.indices) {
-                val width = renderer.textWidth(text.substring(0, index), height, font)
+                val width = textWidth(text.substring(0, index))
                 if (width > maxWidth) {
-                    println("$width $maxWidth")
-
+                    // this doesn't fully prevent awkward placement of the periods (example: "text    ...")
+                    // however it should be rare enough that it isn't an issue
+                    if (text[index].isWhitespace()) visibleLength--
                     isLonger = true
                     break
                 }
@@ -401,13 +430,6 @@ class TextInput(
     data class TextChanged(var string: String = "", var cancelled: Boolean = false) : AuroraEvent.NonSpecific {
         fun cancel() {
             cancelled = true
-        }
-
-        /**
-         * Modifies the event's string with the input.
-         */
-        fun modifyString(string: String) {
-            this.string = string
         }
     }
 

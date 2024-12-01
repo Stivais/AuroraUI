@@ -121,3 +121,12 @@ fun Element.moveToTop() {
 fun ElementScope<*>.passEvent(event: AuroraEvent, to: ElementScope<*>) {
     ui.eventManager.postToAll(event, to.element)
 }
+
+fun <E : Element> ElementScope<E>.toggle(): ElementScope<E> {
+    element.enabled = !element.enabled
+    return this
+}
+
+fun ElementScope<*>.focused(): Boolean {
+    return ui.eventManager.focused == this.element
+}
