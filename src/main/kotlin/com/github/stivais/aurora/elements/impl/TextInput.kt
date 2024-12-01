@@ -74,7 +74,6 @@ class TextInput(
                 renderer.text(text, x - offset, y, height, color!!.rgba, font)
             }
         }
-        renderer.hollowRect(x, y, width, height, 1f, Color.WHITE.rgba)
     }
 
     init {
