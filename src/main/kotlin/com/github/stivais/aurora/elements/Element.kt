@@ -304,13 +304,14 @@ abstract class Element(
     fun accept(event: AuroraEvent): Boolean {
         if (events != null) {
             val key: Any = if (event is AuroraEvent.NonSpecific) event::class.java else event
-            (events!![key] ?: return false).loop { if (it(event)) return true }
+            val listeners = events!![key] ?: return false
 
             when (event) {
                 is Mouse.Clicked -> pressed = true
                 is Mouse.Released -> pressed = false
                 is Lifetime -> events!!.remove(key)
             }
+            listeners.loop { if (it(event)) return true }
         }
         return false
     }

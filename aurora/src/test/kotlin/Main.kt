@@ -1,8 +1,9 @@
 import com.github.stivais.GLFWWindow
 import com.github.stivais.NVGRenderer
+import com.github.stivais.aurora.color.Color
 import com.github.stivais.aurora.dsl.Aurora
-import com.github.stivais.aurora.dsl.px
-import com.github.stivais.aurora.elements.impl.Text.Companion.shadow
+import com.github.stivais.aurora.utils.toHSB
+import com.github.stivais.colorPicker
 
 
 fun main() {
@@ -28,11 +29,11 @@ fun main() {
 //                }
 //            }
 
-            column {
-                repeat(5) {
-                    text("Hi", size = (it * 50).px).shadow = true
-                }
-            }
+//            column {
+//                repeat(5) {
+//                    text("Hi", size = (it * 50).px).shadow = true
+//                }
+//            }
 
 //            textInput(
 //                "hello world",
@@ -48,6 +49,8 @@ fun main() {
 //                    if (str.length > 15) event.string = str.substring(0, 15)
 //                }
 //            }
+
+            colorPicker(Color.RGB(50, 150, 220).toHSB())
         }
     )
 }

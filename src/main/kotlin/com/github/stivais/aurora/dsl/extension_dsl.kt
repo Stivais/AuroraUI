@@ -21,20 +21,11 @@ import com.github.stivais.aurora.utils.multiply
  * @param block Function to get ran.
  */
 inline fun ElementScope<*>.onDrag(button: Int = 0, crossinline block: () -> Boolean) {
-    var pressed = false
     onClick(button) {
-        pressed = true
         block.invoke()
     }
-    onRelease(button) {
-        pressed = false
-    }
     onMouseMove {
-        if (pressed) {
-            block.invoke()
-        } else {
-            false
-        }
+        if (element.pressed) block.invoke() else false
     }
 }
 
