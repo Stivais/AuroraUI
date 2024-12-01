@@ -7,10 +7,7 @@ import com.github.stivais.aurora.constraints.Positions
 import com.github.stivais.aurora.dsl.registerEventUnit
 import com.github.stivais.aurora.elements.AuroraDSL
 import com.github.stivais.aurora.elements.ElementScope
-import com.github.stivais.aurora.events.AuroraEvent
-import com.github.stivais.aurora.events.Focused
-import com.github.stivais.aurora.events.Keyboard
-import com.github.stivais.aurora.events.Mouse
+import com.github.stivais.aurora.events.*
 import com.github.stivais.aurora.input.Keys
 import com.github.stivais.aurora.utils.dropAt
 import com.github.stivais.aurora.utils.multiply
@@ -36,12 +33,22 @@ class TextInput(
             }
         }
 
+    /**
+     * String which gets rendered if [text] is longer than maximum width (if provided).
+     */
+    private var visibleText: String? = null
+
     private var caret = text.length
     private var selection = text.length
 
     private var caretX = 0f
     private var selectionWidth = 0f
 
+    /**
+     * Offset used to show a section of [text] when it is longer than maximum width (if provided).
+     *
+     * @see maxWidth
+     */
     private var textOffset = 0f
 
     override fun draw() {
@@ -54,11 +61,20 @@ class TextInput(
             if (selectionWidth != 0f) renderer.rect(x, y, selectionWidth, height, SELECTION_COLOR)
         }
 
-        if (text.isEmpty()) {
-            renderer.text(placeholder, x, y, height, color!!.rgba.multiply(0.8f), font)
-        } else {
-            renderer.text(text, x - offset, y, height, color!!.rgba, font)
+        when {
+            text.isEmpty() -> {
+                renderer.text(placeholder, x, y, height, color!!.rgba.multiply(0.8f), font)
+            }
+
+            visibleText != null -> {
+                renderer.text(visibleText!!, x - offset, y, height, color!!.rgba, font)
+            }
+
+            else -> {
+                renderer.text(text, x - offset, y, height, color!!.rgba, font)
+            }
         }
+        renderer.hollowRect(x, y, width, height, 1f, Color.WHITE.rgba)
     }
 
     init {
@@ -68,9 +84,24 @@ class TextInput(
         var clickCount = 1
         var lastClickTime = 0L
 
+        // compute visible text (requires renderer to be initialized)
+        registerEventUnit(Lifetime.Initialized) {
+            if (!constraints.width.undefined()) {
+                // might be bad practice?? im not sure.
+                size()
+                updateVisibleText()
+            }
+        }
+        registerEventUnit(Focused.Gained) {
+            visibleText = null
+        }
         registerEventUnit(Focused.Lost) {
-            textOffset = 0f
             clearSelection()
+            textOffset = 0f
+
+            // if text is longer than width (if width is defined),
+            // it will cut off the visible part of the text with ".." to indicate it continues
+            updateVisibleText()
         }
         registerEventUnit(Mouse.Clicked(0)) {
             if (ui.eventManager.focused != this) {
@@ -87,14 +118,17 @@ class TextInput(
                     caretFromMouse()
                     clearSelection()
                 }
+
                 2 -> {
                     selectWord()
                 }
+
                 3 -> {
                     selection = 0
                     caret = text.length
                     updateCaretPosition()
                 }
+
                 4 -> clickCount = 0
             }
         }
@@ -110,30 +144,34 @@ class TextInput(
         registerEventUnit(Keyboard.CharTyped()) { (char, mods) ->
             if (mods.hasControl && !mods.hasShift) {
 
-               when (char) {
-                   'v', 'V' -> {
-                       val clipboard = ui.window?.getClipboard()
-                       if (clipboard != null) insert(clipboard)
-                   }
-                   'c', 'C' -> {
+                when (char) {
+                    'v', 'V' -> {
+                        val clipboard = ui.window?.getClipboard()
+                        if (clipboard != null) insert(clipboard)
+                    }
+
+                    'c', 'C' -> {
                         if (caret != selection) {
                             ui.window?.setClipboard(text.substringSafe(caret, selection))
                         }
-                   }
-                   'x', 'X' -> {
+                    }
+
+                    'x', 'X' -> {
                         if (caret != selection) {
                             ui.window?.setClipboard(text.substringSafe(caret, selection))
                             deleteSelection()
                         }
-                   }
-                   'a', 'A' -> {
-                       selection = 0
-                       caret = text.length
-                   }
-                   'w', 'W' -> {
-                       selectWord()
-                   }
-               }
+                    }
+
+                    'a', 'A' -> {
+                        selection = 0
+                        caret = text.length
+                    }
+
+                    'w', 'W' -> {
+                        selectWord()
+                    }
+                }
             } else {
                 insert(char.toString())
             }
@@ -171,6 +209,7 @@ class TextInput(
                         if (!mods.hasShift) selection = caret
                     }
                 }
+
                 Keys.LEFT -> {
                     if (caret != 0) {
                         caret = if (mods.hasControl) getPreviousSpace() else caret - 1
@@ -182,6 +221,7 @@ class TextInput(
                     caret = 0
                     if (!mods.hasShift) selection = caret
                 }
+
                 Keys.END -> {
                     caret = text.length
                     if (!mods.hasShift) selection = caret
@@ -190,6 +230,7 @@ class TextInput(
                 Keys.ESCAPE, Keys.ENTER -> {
                     ui.unfocus()
                 }
+
                 else -> {}
             }
             updateCaretPosition()
@@ -265,7 +306,7 @@ class TextInput(
 
         if (caret != 0) {
             val previousX = caretX
-            caretX = renderer.textWidth(text.substring(0, caret), height, font)
+            caretX = renderer.textWidth(text.substringSafe(0, caret), height, font)
 
             if (!constraints.width.undefined()) {
                 if (previousX < caretX) {
@@ -274,7 +315,7 @@ class TextInput(
                     }
                 } else {
                     if (caretX - textOffset <= 0f) {
-                        textOffset =  renderer.textWidth(text.substring(0, caret - 1), height, font)
+                        textOffset = renderer.textWidth(text.substringSafe(0, caret - 1), height, font)
                     }
                 }
             }
@@ -327,6 +368,32 @@ class TextInput(
     }
 
     /**
+     * Updates [visibleText], which gets used when the [text] is longer than the elements width (only if it defined).
+     */
+    private fun updateVisibleText() {
+        if (text.isNotEmpty()) {
+            val maxWidth = width - renderer.textWidth("....", height, font)
+            var isLonger = false
+            var visibleLength = 0
+
+            for (index in text.indices) {
+                val width = renderer.textWidth(text.substring(0, index), height, font)
+                if (width > maxWidth) {
+                    println("$width $maxWidth")
+
+                    isLonger = true
+                    break
+                }
+                visibleLength++
+            }
+            visibleText = if (isLonger) text.substring(0, visibleLength) + "..." else null
+
+        } else {
+            visibleText = null
+        }
+    }
+
+    /**
      * Event, which gets registered when the text changes in a [TextInput].
      *
      * The input is able to modify the string.
@@ -372,5 +439,5 @@ class TextInput(
         fun ElementScope<TextInput>.maxWidth(size: Constraint.Size) {
             element.constraints.width = size
         }
-     }
+    }
 }

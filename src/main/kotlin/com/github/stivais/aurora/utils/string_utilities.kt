@@ -4,8 +4,9 @@ import kotlin.math.max
 import kotlin.math.min
 
 fun String.substringSafe(from: Int, to: Int): String {
-    val f = min(from, to)
+    val f = min(from, to).coerceAtLeast(0)
     val t = max(to, from)
+    if (t > length) return substring(f)
     return substring(f, t)
 }
 
