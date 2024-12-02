@@ -64,6 +64,7 @@ class AuroraUI(val renderer: Renderer) {
         main.size()
         main.positionChildren()
         main.clip()
+        main.initialize()
     }
 
     /**

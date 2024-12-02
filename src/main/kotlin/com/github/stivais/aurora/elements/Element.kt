@@ -12,6 +12,7 @@ import com.github.stivais.aurora.events.Lifetime
 import com.github.stivais.aurora.events.Mouse
 import com.github.stivais.aurora.transforms.Transform
 import com.github.stivais.aurora.utils.loop
+import com.github.stivais.aurora.utils.loopRemoveIf
 import kotlin.experimental.ExperimentalTypeInference
 
 /**
@@ -75,7 +76,7 @@ abstract class Element(
     /**
      * Flag to indicate if the mouse has pressed this element.
      */
-    private var pressed: Boolean = false
+    var pressed: Boolean = false
 
     var x = 0f
     var y = 0f
@@ -289,6 +290,15 @@ abstract class Element(
         children!!.remove(element)
         element.parent = null
         ui.eventManager.postToAll(Lifetime.Uninitialized, element)
+    }
+
+    fun removeAll() {
+        if (children.isNullOrEmpty()) return
+        children?.loopRemoveIf { element ->
+            element.parent = null
+            ui.eventManager.postToAll(Lifetime.Uninitialized, element)
+            true
+        }
     }
 
     /**

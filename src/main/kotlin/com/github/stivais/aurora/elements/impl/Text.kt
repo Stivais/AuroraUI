@@ -34,7 +34,7 @@ open class Text(
     /**
      * Flag for this text element, if it should render the text with a shadow.
      *
-     * The color is 80% darker than the main color.
+     * The color is 30% darker than the main color.
      */
     private var shadow: Boolean = false
 
@@ -59,7 +59,7 @@ open class Text(
     protected fun drawText(string: String, x: Float = this.x, y: Float = this.y, color: Int) {
         if (shadow) {
             val offset = height / 25f
-            renderer.text(string, x + offset, y + offset, height, color.multiply(0.8f), font)
+            renderer.text(string, x + offset, y + offset, height, color.multiply(0.7f), font)
         }
         renderer.text(string, x, y, height, color, font)
     }
