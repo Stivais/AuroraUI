@@ -75,7 +75,7 @@ abstract class Element(
     /**
      * Flag to indicate if the mouse has pressed this element.
      */
-    var pressed: Boolean = false
+    private var pressed: Boolean = false
 
     var x = 0f
     var y = 0f

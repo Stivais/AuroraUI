@@ -3,6 +3,8 @@ package com.github.stivais.aurora.elements.impl
 import com.github.stivais.aurora.color.Color
 import com.github.stivais.aurora.constraints.Constraint
 import com.github.stivais.aurora.constraints.Positions
+import com.github.stivais.aurora.dsl.at
+import com.github.stivais.aurora.dsl.percent
 import com.github.stivais.aurora.elements.AuroraDSL
 import com.github.stivais.aurora.elements.Element
 import com.github.stivais.aurora.elements.ElementScope
@@ -80,5 +82,24 @@ open class Text(
         var <E : Text> ElementScope<E>.shadow
             get() = element.shadow
             set(value) { element.shadow = value }
+
+        /**
+         * Subclass of [Text], where text is supplied from a function.
+         *
+         * NOTE: It should only be used if text changes really often.
+         */
+        @AuroraDSL
+        inline fun ElementScope<*>.textSupplied(
+            crossinline supplier: () -> Any?,
+            font: Font,
+            color: Color,
+            pos: Positions = at(),
+            size: Constraint.Size = 50.percent
+        ): ElementScope<Text> = object : Text(supplier().toString(), font, color, pos, size) {
+            override fun draw() {
+                text = supplier().toString()
+                super.draw()
+            }
+        }.scope { /* no-op */ }
     }
 }
