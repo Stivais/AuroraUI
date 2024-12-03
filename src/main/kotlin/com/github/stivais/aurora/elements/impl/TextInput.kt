@@ -48,7 +48,7 @@ class TextInput(
     private var caret = text.length
         set(value) {
             if (field == value) return
-            field = value
+            field = value.coerceIn(0, text.length)
             caretBlinkTime = System.currentTimeMillis()
         }
     private var selection = text.length
@@ -277,8 +277,9 @@ class TextInput(
             text = text.removeRangeSafe(caret, selection)
             caret = if (selection > caret) caret else selection
         }
+        // ensure it cant be longer
         val tl = text.length
-        text = text.substring(0, caret) + string + text.substring(caret)
+        text = text.substringSafe(0, caret) + string + text.substring(caret)
         if (text.length != tl) caret += string.length
         clearSelection()
     }

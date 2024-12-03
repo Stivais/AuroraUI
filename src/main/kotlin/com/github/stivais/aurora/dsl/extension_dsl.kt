@@ -26,7 +26,7 @@ inline fun ElementScope<*>.onDrag(button: Int = 0, crossinline block: () -> Bool
         pressed = true
         block.invoke()
     }
-    onRelease {
+    onRelease(button) {
         pressed = false
     }
     onMouseMove {

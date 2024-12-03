@@ -113,6 +113,11 @@ abstract class Element(
         private set
 
     open var enabled: Boolean = true
+        set(value) {
+            if (field == value) return
+            field = value
+            redraw()
+        }
 
     var scissors: Boolean = false
 
