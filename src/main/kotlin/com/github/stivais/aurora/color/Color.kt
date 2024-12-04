@@ -105,11 +105,18 @@ interface Color {
             }
 
         override fun equals(other: Any?): Boolean {
-            return other is Color && other.rgba == this.rgba
+            return other is HSB &&
+                    other.hue == hue && other.saturation == saturation &&
+                    other.brightness == brightness &&
+                    other.alpha == alpha && other.rgba == rgba
         }
 
         override fun hashCode(): Int {
-            return rgba.hashCode()
+            var result = hue.hashCode()
+            result = 31 * result + saturation.hashCode()
+            result = 31 * result + brightness.hashCode()
+            result = 31 * result + alpha.hashCode()
+            return result
         }
     }
 
