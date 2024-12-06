@@ -16,9 +16,13 @@ class Animation(
     private var duration: Float,
     private var style: Style
 ) {
-
     private var time: Long = System.nanoTime()
 
+    /**
+     * Flag for if this animation is finished.
+     *
+     * NOTE: Usually this animation is discarded if this is finished.
+     */
     var finished: Boolean = false
 
     private var onFinish: (() -> Unit)? = null
@@ -32,11 +36,17 @@ class Animation(
         return if (finished) 1f else style.getValue(percent)
     }
 
+    /**
+     * Adds a function for this animation to run when it is finished.
+     */
     fun onFinish(block: () -> Unit): Animation {
         onFinish = block
         return this
     }
 
+    /**
+     * Restart this animation, allowing it to be reused, if it wasn't previously finished.
+     */
     fun restart(duration: Float, style: Style) {
         this.duration = duration
         this.style = style

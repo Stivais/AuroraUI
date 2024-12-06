@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.github.stivais.aurora.elements.impl
 
 import com.github.stivais.aurora.color.Color
@@ -11,6 +13,13 @@ import com.github.stivais.aurora.elements.ElementScope
 import com.github.stivais.aurora.renderer.data.Font
 import com.github.stivais.aurora.utils.multiply
 
+/**
+ * # Text
+ *
+ * Text is an element that renders a string to the screen.
+ *
+ * @param size The size of the string's height.
+ */
 open class Text(
     string: String,
     private val font: Font,
@@ -34,7 +43,7 @@ open class Text(
     /**
      * Flag for this text element, if it should render the text with a shadow.
      *
-     * The color is 30% darker than the main color.
+     * The color is 65% darker than the main color.
      */
     private var shadow: Boolean = false
 
@@ -59,7 +68,7 @@ open class Text(
     protected fun drawText(string: String, x: Float = this.x, y: Float = this.y, color: Int) {
         if (shadow) {
             val offset = height / 25f
-            renderer.text(string, x + offset, y + offset, height, color.multiply(0.7f), font)
+            renderer.text(string, x + offset, y + offset, height, color.multiply(0.65f), font)
         }
         renderer.text(string, x, y, height, color, font)
     }

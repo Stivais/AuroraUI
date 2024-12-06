@@ -9,13 +9,21 @@ import com.github.stivais.aurora.elements.ElementScope
 import com.github.stivais.aurora.renderer.data.Radii
 import com.github.stivais.aurora.renderer.data.Gradient as GradientType
 
+/**
+ * # Block
+ *
+ * The most basic element (which renders).
+ *
+ * It is a rectangle that can optionally be rounded
+ * and also have an outline with a specified thickness.
+ */
 open class Block(
     constraints: Constraints,
     color: Color,
     radii: Radii?
 ): Element(constraints, color) {
 
-    val radii = radii ?: EMPTY_RADIUS
+    protected val radii = radii ?: EMPTY_RADIUS
 
     private var outline: Color? = null
     private var thickness: Constraint.Measurement? = null
@@ -30,11 +38,14 @@ open class Block(
 
     companion object {
 
+        /**
+         * Constant value for usage between [Blocks][Block] without a radius.
+         */
         @JvmField
         val EMPTY_RADIUS = Radii(0f, 0f, 0f, 0f)
 
         /**
-         * Adds an outline to a [Block]
+         * Adds an outline to a [Block] with a specified thickness.
          */
         @AuroraDSL
         fun ElementScope<Block>.outline(color: Color, thickness: Constraint.Measurement): ElementScope<Block> {
@@ -47,7 +58,7 @@ open class Block(
     /**
      * # Block.Gradient
      *
-     * Copy of [Block], with a gradient between 2 colors.
+     * Copy of [Block], with a gradient between 2 colors based on a direction.
      */
     class Gradient(
         constraints: Constraints,

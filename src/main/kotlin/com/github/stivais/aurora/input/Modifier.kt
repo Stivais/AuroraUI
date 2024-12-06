@@ -2,6 +2,11 @@
 
 package com.github.stivais.aurora.input
 
+/**
+ * # Modifier
+ *
+ * Represents whenever the user is holding down certain keys (Shift, Ctrl, Alt).
+ */
 @JvmInline
 value class Modifier(val value: Byte) {
     val hasLeftShift: Boolean
@@ -32,21 +37,27 @@ value class Modifier(val value: Byte) {
         get() = value.toInt() and 0b00110000 != 0
 
     companion object {
+        /** Static modifier representing LSHIFT. */
         @JvmStatic
         val LSHIFT: Modifier = Modifier(value = 0b00000001)
 
+        /** Static modifier representing RSHIFT. */
         @JvmStatic
         val RSHIFT: Modifier = Modifier(value = 0b00000010)
 
+        /** Static modifier representing LCTRL. */
         @JvmStatic
         val LCTRL: Modifier = Modifier(value = 0b00000100)
 
+        /** Static modifier representing RCTRL. */
         @JvmStatic
         val RCTRL: Modifier = Modifier(value = 0b00001000)
 
+        /** Static modifier representing LALT. */
         @JvmStatic
         val LALT: Modifier = Modifier(value = 0b00010000)
 
+        /** Static modifier representing RALT. */
         @JvmStatic
         val RALT: Modifier = Modifier(value = 0b00100000)
     }

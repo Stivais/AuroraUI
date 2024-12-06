@@ -161,22 +161,21 @@ class TextInput(
 
         registerEventUnit(Keyboard.CharTyped()) { (char, mods) ->
             if (mods.hasControl && !mods.hasShift) {
-
                 when (char) {
                     'v', 'V' -> {
-                        val clipboard = ui.window?.getClipboard()
+                        val clipboard = ui.clipboard
                         if (clipboard != null) insert(clipboard)
                     }
 
                     'c', 'C' -> {
                         if (caret != selection) {
-                            ui.window?.setClipboard(text.substringSafe(caret, selection))
+                            ui.clipboard = text.substringSafe(caret, selection)
                         }
                     }
 
                     'x', 'X' -> {
                         if (caret != selection) {
-                            ui.window?.setClipboard(text.substringSafe(caret, selection))
+                            ui.clipboard = text.substringSafe(caret, selection)
                             deleteSelection()
                         }
                     }

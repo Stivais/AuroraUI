@@ -110,6 +110,7 @@ class GLFWWindow(
             glfwSwapBuffers(handle)
             glfwPollEvents()
         }
+        ui.close()
         setCapabilities(null)
         glfwSetErrorCallback(null)?.free()
         Callbacks.glfwFreeCallbacks(handle)

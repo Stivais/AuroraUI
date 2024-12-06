@@ -50,7 +50,7 @@ fun ElementScope<*>.colorPicker(value: Color.HSB) = popup(constrain(w = Bounding
 
             row(padding = 7.5.px) {
                 // saturation and brightness
-                outline(
+                outlineBlock(
                     size(w = 200.px, h = 200.px),
                     colorMaxBrightness,
                     thickness = 1.px,
@@ -75,7 +75,7 @@ fun ElementScope<*>.colorPicker(value: Color.HSB) = popup(constrain(w = Bounding
                 }
 
                 // hue
-                outline(
+                outlineBlock(
                     size(w = 15.px, h = 200.px),
                     colorMaxBrightness,
                     thickness = 1.px,

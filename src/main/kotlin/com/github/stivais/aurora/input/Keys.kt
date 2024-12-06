@@ -3,7 +3,9 @@
 package com.github.stivais.aurora.input
 
 /**
- * List of keys which can't be represented as a [Char].
+ * # Keys
+ *
+ * This enum represents keys which can't be represented as a [Char].
  */
 enum class Keys {
     // placeholder

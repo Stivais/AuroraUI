@@ -122,11 +122,17 @@ fun ElementScope<*>.passEvent(event: AuroraEvent, to: ElementScope<*>) {
     ui.eventManager.postToAll(event, to.element)
 }
 
+/**
+ * Toggles this element's enabled value.
+ */
 fun <E : Element> ElementScope<E>.toggle(): ElementScope<E> {
     element.enabled = !element.enabled
     return this
 }
 
+/**
+ * Returns a boolean based on if this element is focused in the [EventManager][com.github.stivais.aurora.events.EventManager]
+ */
 fun ElementScope<*>.focused(): Boolean {
     return ui.eventManager.focused == this.element
 }

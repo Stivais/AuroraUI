@@ -16,7 +16,7 @@ import com.github.stivais.aurora.renderer.data.Radii
 /**
  * Creates a [Block], that is transparent with an outline.
  */
-inline fun ElementScope<*>.outline(
+inline fun ElementScope<*>.outlineBlock(
     constraints: Constraints,
     color: Color,
     thickness: Constraint.Measurement,

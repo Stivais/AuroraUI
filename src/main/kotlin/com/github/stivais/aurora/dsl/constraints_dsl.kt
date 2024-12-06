@@ -28,7 +28,7 @@ inline val Number.px: Pixel
     get() = Pixel(this.toFloat())
 
 /**
- * Creates a pixel constraint from a number.
+ * Creates a percent constraint from a number (0-100).
  */
 inline val Number.percent: Percent
     get() = Percent(this.toFloat() / 100f)

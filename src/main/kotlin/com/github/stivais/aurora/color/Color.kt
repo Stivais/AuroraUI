@@ -21,11 +21,6 @@ interface Color {
      */
     val rgba: Int
 
-//    /**
-//     * Uses internally by UIs
-//     */
-//    fun get(element: Element): Int = rgba
-
     /**
      * # Color.RGB
      *

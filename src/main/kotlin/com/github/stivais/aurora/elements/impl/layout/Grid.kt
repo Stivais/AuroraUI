@@ -5,6 +5,13 @@ import com.github.stivais.aurora.constraints.Constraints
 import com.github.stivais.aurora.elements.Layout
 import com.github.stivais.aurora.utils.loop
 
+/**
+ * # Grid
+ *
+ * This [Layout], positions children in a grid pattern,
+ * where it places them horizontally until the elements exceed the width,
+ * when it does it will start placing them on a new line.
+ */
 class Grid(
     constraints: Constraints,
     padding: Constraint.Size? = null

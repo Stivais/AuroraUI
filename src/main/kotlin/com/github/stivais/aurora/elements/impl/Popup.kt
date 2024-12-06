@@ -7,6 +7,13 @@ import com.github.stivais.aurora.elements.ElementScope
 import com.github.stivais.aurora.transforms.impl.Alpha
 import com.github.stivais.aurora.transforms.impl.Scale
 
+/**
+ * # Popup
+ *
+ * Extension of [ElementScope], which contains functions for a popup that can be closed with an animation.
+ *
+ * To create one use [popup]
+ */
 class Popup(
     element: Group,
     private val alphaAnimation: Alpha.Animated,
@@ -16,6 +23,11 @@ class Popup(
 
     private var closing = false
 
+    /**
+     * Closes this popup.
+     *
+     * @param smooth If this popup should animate before closing.
+     */
     fun closePopup(smooth: Boolean = this.smooth) {
         if (!closing) {
             closing = true
@@ -32,7 +44,14 @@ class Popup(
     }
 }
 
-fun ElementScope<*>.popup(
+/**
+ * Function for creating [Popups][Popup].
+ *
+ * NOTE: It adds it to the root element inside a UI, and not the current scope.
+ *
+ * @param smooth If this popup should animate when opening (and closing).
+ */
+inline fun ElementScope<*>.popup(
     constraints: Constraints,
     smooth: Boolean,
     block: Popup.() -> Unit

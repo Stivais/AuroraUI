@@ -47,26 +47,11 @@ fun setupConnection(
     useCaches: Boolean = true,
 ): InputStream {
     val connection = URL(url).openConnection() as HttpURLConnection
-    connection.setRequestMethod("GET");
-    connection.setUseCaches(useCaches);
-    connection.addRequestProperty("User-Agent", "Aurora");
-    connection.setReadTimeout(timeout);
-    connection.setConnectTimeout(timeout);
-    connection.setDoOutput(true);
+    connection.setRequestMethod("GET")
+    connection.setUseCaches(useCaches)
+    connection.addRequestProperty("User-Agent", "Aurora")
+    connection.setReadTimeout(timeout)
+    connection.setConnectTimeout(timeout)
+    connection.setDoOutput(true)
     return connection.inputStream
-}
-
-/**
- * Extension function to println value
- *
- * @param getStackTrace prints the line this function was used to help tracking it.
- */
-fun <T> T.log(getStackTrace: Boolean = true): T {
-    if (getStackTrace) {
-        val trace = Thread.currentThread().stackTrace.getOrNull(3)
-        println("[$trace] $this")
-    } else {
-        println(this)
-    }
-    return this
 }

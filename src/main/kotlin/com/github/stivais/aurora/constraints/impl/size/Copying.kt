@@ -2,7 +2,6 @@ package com.github.stivais.aurora.constraints.impl.size
 
 import com.github.stivais.aurora.constraints.Constraint
 import com.github.stivais.aurora.elements.Element
-import com.github.stivais.aurora.utils.log
 
 /**
  * # Copying
