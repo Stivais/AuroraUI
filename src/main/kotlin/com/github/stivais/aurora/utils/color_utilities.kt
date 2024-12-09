@@ -58,10 +58,7 @@ fun hexToRGBA(hex: String): Int {
 }
 
 /**
- * Converts the color to a hexadecimal string representation.
- *
- * @param returnAlpha If true, includes the alpha value in the resulting string.
- * @return A string representing the hexadecimal color value in the format #RRGGBB or #RRGGBBAA.
+ * Gets a string representing a hexadecimal color value. (#RRGGBB or #RRGGBBAA)
  */
 fun Color.toHexString(returnAlpha: Boolean = false): String {
     val r = (rgba shr 16) and 0xFF
