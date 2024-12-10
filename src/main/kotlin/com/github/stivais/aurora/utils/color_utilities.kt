@@ -60,8 +60,12 @@ fun hexToRGBA(hex: String): Int {
 /**
  * Gets a string representing a hexadecimal color value. (#RRGGBB or #RRGGBBAA)
  */
-fun Color.toHexString(): String {
-    return "#" + Integer.toHexString(rgba).substring(2)
+fun Color.toHexString(returnAlpha: Boolean = false): String {
+    return if (returnAlpha) {
+        String.format("#%02X%02X%02X%02X", red, green, blue, alpha)
+    } else {
+        String.format("#%02X%02X%02X", red, green, blue)
+    }
 }
 
 /**
