@@ -61,14 +61,10 @@ fun hexToRGBA(hex: String): Int {
  * Gets a string representing a hexadecimal color value. (#RRGGBB or #RRGGBBAA)
  */
 fun Color.toHexString(returnAlpha: Boolean = false): String {
-    val r = (rgba shr 16) and 0xFF
-    val g = (rgba shr 8) and 0xFF
-    val b = rgba and 0xFF
     return if (returnAlpha) {
-        val a = (rgba shr 24) and 0xFF
-        String.format("#%02X%02X%02X%02X", r, g, b, a)
+        String.format("#%02X%02X%02X%02X", red, green, blue, alpha)
     } else {
-        String.format("#%02X%02X%02X", r, g, b)
+        String.format("#%02X%02X%02X", red, green, blue)
     }
 }
 
