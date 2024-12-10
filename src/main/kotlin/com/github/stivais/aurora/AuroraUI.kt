@@ -60,6 +60,11 @@ class AuroraUI(val renderer: Renderer) {
     val eventManager = EventManager(this)
 
     /**
+     * Flag for when [eventManager] needs to recalculate hovered elements.
+     */
+    var recalculateMouse = false
+
+    /**
      * Gets [EventManager.mouseX]. Used to make code nicer.
      */
     inline val mx: Float
@@ -108,6 +113,10 @@ class AuroraUI(val renderer: Renderer) {
      * Renders all the elements to the screen.
      */
     fun render() {
+        if (recalculateMouse) {
+            eventManager.recalculate()
+            recalculateMouse = false
+        }
         operations.loopRemoveIf {
             it.run()
         }

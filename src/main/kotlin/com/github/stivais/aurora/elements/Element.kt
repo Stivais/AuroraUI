@@ -73,11 +73,6 @@ abstract class Element(
             field = value
         }
 
-    /**
-     * Flag to indicate if the mouse has pressed this element.
-     */
-    var pressed: Boolean = false
-
     var x = 0f
     var y = 0f
     var width = 0f
@@ -159,6 +154,7 @@ abstract class Element(
                 it.render()
             }
             if (scissors) renderer.popScissor()
+            if (hovered)
             renderer.pop()
         }
     }
@@ -230,6 +226,11 @@ abstract class Element(
         }
         postSize(`continue`)
         postPosition()
+
+        // recalculate hovered, in case the element is no longer actually hovered.
+        if (hovered && !isInside(ui.mx, ui.my)) {
+            ui.recalculateMouse = true
+        }
     }
 
     open fun position(element: Element, newX: Float, newY: Float) {
@@ -320,10 +321,7 @@ abstract class Element(
         if (events != null) {
             val key: Any = if (event is AuroraEvent.NonSpecific) event::class.java else event
             val listeners = events!![key] ?: return false
-
             when (event) {
-                is Mouse.Clicked -> pressed = true
-                is Mouse.Released -> pressed = false
                 is Lifetime -> events!!.remove(key)
             }
             listeners.loop { if (it(event)) return true }
