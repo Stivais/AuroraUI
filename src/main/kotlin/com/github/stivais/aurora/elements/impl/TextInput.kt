@@ -113,6 +113,7 @@ class TextInput(
         registerEventUnit(Focused.Gained) {
             caretBlinkTime = System.currentTimeMillis()
             visibleText = null
+            caretFromMouse()
         }
         registerEventUnit(Focused.Lost) {
             clearSelection()
