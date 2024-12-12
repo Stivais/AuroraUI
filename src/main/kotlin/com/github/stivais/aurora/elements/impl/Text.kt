@@ -2,6 +2,7 @@
 
 package com.github.stivais.aurora.elements.impl
 
+import com.github.stivais.aurora.AuroraUI
 import com.github.stivais.aurora.color.Color
 import com.github.stivais.aurora.constraints.Constraint
 import com.github.stivais.aurora.constraints.Positions
@@ -100,8 +101,8 @@ open class Text(
         @AuroraDSL
         inline fun ElementScope<*>.textSupplied(
             crossinline supplier: () -> Any?,
-            font: Font,
-            color: Color,
+            font: Font = AuroraUI.defaultFont,
+            color: Color = Color.WHITE,
             pos: Positions = at(),
             size: Constraint.Size = 50.percent
         ): ElementScope<Text> = object : Text(supplier().toString(), font, color, pos, size) {

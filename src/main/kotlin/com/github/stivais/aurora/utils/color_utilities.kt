@@ -116,6 +116,8 @@ fun Color.toHSB(): Color.HSB {
 
 /**
  * Implementation of [Color], where it gets supplied the rgba value from [block].
+ *
+ * This isn't recommended to use with expensive calculations because it runs every frame.
  */
 inline fun color(crossinline block: () -> Int): Color = object : Color {
     override val rgba: Int
