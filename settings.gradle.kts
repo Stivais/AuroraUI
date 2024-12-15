@@ -3,3 +3,5 @@ plugins {
 }
 rootProject.name = "Aurora"
 include("aurora")
+include("test")
+include("glfw-impl")

@@ -6,12 +6,21 @@ plugins {
 group = "com.github.stivais"
 version = project.findProperty("version") as String
 
+val lwjglVersion = "3.3.5-SNAPSHOT"
+val lwjglNatives = "natives-windows"
+
 repositories {
     mavenCentral()
+    maven("https://oss.sonatype.org/content/repositories/snapshots/")
 }
 
 dependencies {
     testImplementation(kotlin("test"))
+
+    implementation(platform("org.lwjgl:lwjgl-bom:$lwjglVersion"))
+
+    compileOnly("org.lwjgl", "lwjgl")
+    compileOnly("org.lwjgl", "lwjgl-opengl")
 }
 
 publishing {
