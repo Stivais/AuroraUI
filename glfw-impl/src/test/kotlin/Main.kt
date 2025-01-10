@@ -1,52 +1,52 @@
-import com.github.stivais.GLFWWindow
-import com.github.stivais.aurora.renderer.opengl.shader.Shader
-import com.github.stivais.aurora.renderer.opengl.shader.VAOBuilder
+import com.github.stivais.aurora.animation.Animation
+import com.github.stivais.aurora.element.Component
+import com.github.stivais.aurora.renderer.impl.RendererImpl
+import com.github.stivais.aurora.utils.loop
+import com.github.stivais.com.github.stivais.GLFWWindow
 
+//import com.github.stivais.aurora.renderer.gl20.RendererImploLD
 
 fun main() {
 
     val window = GLFWWindow(500, 500)
 
-    val shader = Shader(
-        """
-        #version 330 core
-        layout (location = 0) in vec2 pos;
-        layout (location = 1) in vec4 color;
+    val renderer = RendererImpl()
+    val aurora = testUI(renderer)
 
-        out vec4 vColor;
+    aurora.initialize(500, 500)
+    aurora.upload()
 
-        void main() {
-        
-            gl_Position = vec4(pos.x, pos.y, 0.0, 1.0);
-            
-            vColor = color;
-            
+
+    var amount = 0
+    fun count(c: Component) {
+        amount++
+        c.children?.loop {
+            count(it)
         }
-        """.trimIndent(),
-        """
-        #version 330 core
-        
-        in vec4 vColor;
-        
-        out vec4 FragColor;
-        
-        void main() {
-           FragColor = vColor;
-        }
-        """.trimIndent(),
-    )
-
-    val vaoBuilder = VAOBuilder()
-
-    vaoBuilder.vertex(-0.5f, -0.5f, 255.toByte(), 0, 0)
-    vaoBuilder.vertex(0.5f, -0.5f, 0, 255.toByte(), 0)
-    vaoBuilder.vertex(0f, 0.0f, 0, 0, 255.toByte())
-    vaoBuilder.upload()
-
-    window.openAndRun {
-        shader.use()
-        vaoBuilder.render()
     }
-    vaoBuilder.cleanup()
+    count(aurora.main)
+    println("component count: $amount")
+
+    var fps = 0
+    var time = System.currentTimeMillis()
+
+    window.onClick {
+        animTest.animate(0.25f * 1_000_000_000, style = Animation.Style.EaseOutQuint)
+        mainRedrawTemp.redraw()
+    }
+
+    window.openAndRun(aurora) {
+        fps++
+        val start = System.currentTimeMillis()
+        if (start - time > 1000) {
+//            animTest.animate(1f * 1_000_000_000, style = Animation.Style.Linear)
+//            mainRedrawTemp.redraw()
+            window.setTitle("aurora - fps: $fps")
+            time = start
+            fps = 0
+        }
+        aurora.render()
+    }
+    aurora.cleanup()
     window.cleanup()
 }

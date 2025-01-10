@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm")
+    id("com.github.johnrengelman.shadow") version "8.0.0"
 }
 
 group = "com.github.stivais"
@@ -13,23 +14,50 @@ repositories {
     maven("https://oss.sonatype.org/content/repositories/snapshots/")
 }
 
+val shadowImpl: Configuration by configurations.creating {
+    configurations.implementation.get().extendsFrom(this)
+}
+
 dependencies {
     testImplementation(kotlin("test"))
-    implementation(project(":"))
+    shadowImpl(project(":"))
 
-    implementation(platform("org.lwjgl:lwjgl-bom:$lwjglVersion"))
+    shadowImpl(platform("org.lwjgl:lwjgl-bom:$lwjglVersion"))
 
-    implementation("org.lwjgl", "lwjgl")
-    implementation("org.lwjgl", "lwjgl-glfw")
-    implementation("org.lwjgl", "lwjgl-opengl")
-    runtimeOnly("org.lwjgl", "lwjgl", classifier = lwjglNatives)
-    runtimeOnly("org.lwjgl", "lwjgl-glfw", classifier = lwjglNatives)
-    runtimeOnly("org.lwjgl", "lwjgl-opengl", classifier = lwjglNatives)
+    shadowImpl("org.lwjgl", "lwjgl")
+    shadowImpl("org.lwjgl", "lwjgl-glfw")
+    shadowImpl("org.lwjgl", "lwjgl-opengl")
+    shadowImpl("org.lwjgl", "lwjgl", classifier = lwjglNatives)
+    shadowImpl("org.lwjgl", "lwjgl-glfw", classifier = lwjglNatives)
+    shadowImpl("org.lwjgl", "lwjgl-opengl", classifier = lwjglNatives)
+
+    shadowImpl("org.joml:joml:1.10.5")
+
+    shadowImpl(kotlin("stdlib"))
+}
+
+tasks.shadowJar {
+    configurations = listOf(shadowImpl) // Ensure shadowJar includes shadowImpl dependencies
+    archiveBaseName.set("my-application")
+    archiveVersion.set("2.0.0-alpha")
+    mergeServiceFiles()
+}
+
+tasks.build {
+    dependsOn(tasks.shadowJar)
+}
+
+tasks.jar {
+    manifest {
+        attributes(
+            "Main-Class" to "com.github.stivais.MainKt"
+        )
+    }
 }
 
 tasks.test {
     useJUnitPlatform()
 }
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(8)
 }

@@ -21,6 +21,7 @@ dependencies {
 
     compileOnly("org.lwjgl", "lwjgl")
     compileOnly("org.lwjgl", "lwjgl-opengl")
+    implementation("org.joml:joml:1.10.5")
 }
 
 publishing {
