@@ -1,12 +1,10 @@
 import com.github.stivais.aurora.Aurora
 import com.github.stivais.aurora.color.Color
-import com.github.stivais.aurora.constraints.Constraint
-import com.github.stivais.aurora.constraints.Positions
-import com.github.stivais.aurora.constraints.Sizes
-import com.github.stivais.aurora.constraints.impl.measurements.Animatable
-import com.github.stivais.aurora.constraints.impl.measurements.Center
-import com.github.stivais.aurora.constraints.impl.measurements.Undefined
+import com.github.stivais.aurora.constraints.measurements.impl.Animatable
+import com.github.stivais.aurora.constraints.measurements.impl.Center
+import com.github.stivais.aurora.dsl.at
 import com.github.stivais.aurora.dsl.px
+import com.github.stivais.aurora.dsl.size
 import com.github.stivais.aurora.element.ComponentScope
 import com.github.stivais.aurora.element.impl.Group
 import com.github.stivais.aurora.renderer.Renderer
@@ -17,11 +15,7 @@ fun aurora(renderer: Renderer, block: ComponentScope<Group>.() -> Unit): Aurora 
     return ui
 }
 
-fun at(x: Constraint.Position = Undefined, y: Constraint.Position = Undefined) = Positions(x, y)
-
 fun center() = at(Center, Center)
-
-fun size(w: Constraint.Size = Undefined, h: Constraint.Size = Undefined) = Sizes(w, h)
 
 val animTest = Animatable(from = 20.px, 125.px)
 
@@ -38,8 +32,9 @@ fun testUI(renderer: Renderer) = aurora(renderer) {
         color = Color.RED
     )
 
+    mainRedrawTemp = this
 
-    mainRedrawTemp = row(center()) {
+//    mainRedrawTemp = row(center()) {
         block(
             size = size(animTest, animTest),
             color = Color.RED
@@ -56,5 +51,5 @@ fun testUI(renderer: Renderer) = aurora(renderer) {
             size = size(animTest, animTest),
             color = Color.WHITE
         )
-    }
+//    }
 }

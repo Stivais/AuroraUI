@@ -3,6 +3,7 @@ import com.github.stivais.aurora.element.Component
 import com.github.stivais.aurora.renderer.impl.RendererImpl
 import com.github.stivais.aurora.utils.loop
 import com.github.stivais.GLFWWindow
+import com.github.stivais.aurora.utils.Timing.Companion.seconds
 
 fun main() {
 
@@ -29,7 +30,7 @@ fun main() {
     var time = System.currentTimeMillis()
 
     window.onClick {
-        animTest.animate(0.25f * 1_000_000_000, style = Animation.Style.EaseOutQuint)
+        animTest.animate(0.25.seconds, style = Animation.Style.EaseOutQuint)
         mainRedrawTemp.redraw()
     }
 
@@ -37,7 +38,7 @@ fun main() {
         fps++
         val start = System.currentTimeMillis()
         if (start - time > 1000) {
-            animTest.animate(1f * 1_000_000_000, style = Animation.Style.Linear)
+            animTest.animate(1.seconds, style = Animation.Style.Linear)
             mainRedrawTemp.redraw()
             window.setTitle("aurora - fps: $fps")
             time = start

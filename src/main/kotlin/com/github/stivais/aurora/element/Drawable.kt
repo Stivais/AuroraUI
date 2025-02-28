@@ -2,17 +2,17 @@ package com.github.stivais.aurora.element
 
 import com.github.stivais.aurora.Aurora
 import com.github.stivais.aurora.color.Color
-import com.github.stivais.aurora.constraints.Positions
-import com.github.stivais.aurora.constraints.Sizes
+import com.github.stivais.aurora.constraints.Constraint
+import com.github.stivais.aurora.constraints.Constraints
 import com.github.stivais.aurora.renderer.Renderer
 
 // handle all rendering stuff etc
 abstract class Drawable(
-    ui: Aurora,
-    positions: Positions,
-    size: Sizes,
+    aurora: Aurora,
+    position: Constraints<Constraint.Position>,
+    size: Constraints<Constraint.Size>,
     val color: Color,
-) : Component(ui, positions, size) {
+) : Component(aurora, position, size) {
 
     abstract fun generate(renderer: Renderer)
 

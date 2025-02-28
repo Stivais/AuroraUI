@@ -1,13 +1,15 @@
-package com.github.stivais.aurora.constraints.impl.measurements
+package com.github.stivais.aurora.constraints.measurements.impl
 
 import com.github.stivais.aurora.animation.Animation
 import com.github.stivais.aurora.constraints.Constraint
+import com.github.stivais.aurora.constraints.measurements.Measurement
 import com.github.stivais.aurora.element.Component
+import com.github.stivais.aurora.utils.Timing
 
-class Animatable(
-    private var from: Constraint,
-    private var to: Constraint
-) : Constraint.Measurement {
+class Animatable<E : Constraint>(
+    private var from: Measurement<E>,
+    private var to: Measurement<E>,
+) : Measurement<E> {
 
     var animation: Animation? = null
         private set
@@ -17,15 +19,15 @@ class Animatable(
     private var before: Float? = null
 
     override fun calculate(component: Component, type: Int): Float {
-        if (animation != null) {
-            // todo: something better
+        val anim = animation
+        if (anim != null) {
             component.parent?.redraw = true
 
-            val progress = animation!!.get()
+            val progress = anim.get()
             val from = before ?: from.calculate(component, type)
             current = from + (to.calculate(component, type) - from) * progress
 
-            if (animation!!.finished) {
+            if (anim.finished) {
                 animation = null
                 before = null
                 swap()
@@ -35,18 +37,21 @@ class Animatable(
         return from.calculate(component, type)
     }
 
-    fun animate(duration: Float, style: Animation.Style): Animation? {
-        if (duration <= 0f) {
+    fun animate(duration: Timing, style: Animation.Style): Animation? {
+        val d = duration.value
+        if (d <= 0f) {
             swap()
             animation = null
             return null
         }
-        if (animation != null) {
+
+        val anim = animation
+        if (anim != null) {
             swap()
             before = current
-            animation!!.restart(duration, style)
+            anim.restart(d, style)
         } else {
-            animation = Animation(duration, style)
+            animation = Animation(d, style)
         }
         return animation
     }
@@ -56,7 +61,4 @@ class Animatable(
         to = from
         from = temp
     }
-
-    override fun mutates(component: Component) = true
-    
 }

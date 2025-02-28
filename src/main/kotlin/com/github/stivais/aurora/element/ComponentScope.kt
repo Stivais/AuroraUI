@@ -3,9 +3,11 @@
 package com.github.stivais.aurora.element
 
 import com.github.stivais.aurora.color.Color
-import com.github.stivais.aurora.constraints.Positions
-import com.github.stivais.aurora.constraints.Sizes
-import com.github.stivais.aurora.constraints.impl.measurements.Undefined
+import com.github.stivais.aurora.constraints.Constraint
+import com.github.stivais.aurora.constraints.Constraints
+import com.github.stivais.aurora.constraints.measurements.impl.Undefined
+import com.github.stivais.aurora.dsl.at
+import com.github.stivais.aurora.dsl.size
 import com.github.stivais.aurora.element.impl.Block
 import com.github.stivais.aurora.element.impl.Column
 import com.github.stivais.aurora.element.impl.Row
@@ -17,23 +19,23 @@ open class ComponentScope<C : Component>(val component: C) {
     }
 
     inline fun block(
-        at: Positions = Positions(Undefined, Undefined),
-        size: Sizes,
+        at: Constraints<Constraint.Position> = at(Undefined, Undefined),
+        size: Constraints<Constraint.Size>,
         color: Color,
         scope: ComponentScope<Block>.() -> Unit = {}
-    ) = Block(component.ui, at, size, color).scope(scope)
+    ) = Block(component.aurora, at, size, color).scope(scope)
 
     inline fun column(
-        at: Positions,
-        size: Sizes = Sizes(Undefined, Undefined),
+        at: Constraints<Constraint.Position>,
+        size: Constraints<Constraint.Size> = size(Undefined, Undefined),
         scope: ComponentScope<Column>.() -> Unit = {}
-    ) = Column(component.ui, at, size).scope(scope)
+    ) = Column(component.aurora, at, size).scope(scope)
 
     inline fun row(
-        at: Positions,
-        size: Sizes = Sizes(Undefined, Undefined),
+        at: Constraints<Constraint.Position>,
+        size: Constraints<Constraint.Size> = size(Undefined, Undefined),
         scope: ComponentScope<Row>.() -> Unit = {}
-    ) = Row(component.ui, at, size).scope(scope)
+    ) = Row(component.aurora, at, size).scope(scope)
 
 
     inline fun <C : Component> C.scope(block: ComponentScope<C>.() -> Unit): ComponentScope<C> {

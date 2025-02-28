@@ -1,9 +1,8 @@
 package com.github.stivais.aurora
 
-import com.github.stivais.aurora.constraints.Positions
-import com.github.stivais.aurora.constraints.Sizes
-import com.github.stivais.aurora.dsl.mutable
+import com.github.stivais.aurora.dsl.at
 import com.github.stivais.aurora.dsl.px
+import com.github.stivais.aurora.dsl.size
 import com.github.stivais.aurora.element.Component
 import com.github.stivais.aurora.element.Drawable
 import com.github.stivais.aurora.element.impl.Group
@@ -18,18 +17,31 @@ import com.github.stivais.aurora.utils.loop
 class Aurora(
     val renderer: Renderer,
 ) {
-    private val width = 1920.px.mutable
-    private val height = 1080.px.mutable
+
+    private var width: Int = 0
+        set(value) {
+            field = value
+            widthPx.amount = value.toFloat()
+        }
+
+    private var height: Int = 0
+        set(value) {
+            field = value
+            heightPx.amount = value.toFloat()
+        }
+
+    private val widthPx = width.px
+    private val heightPx = height.px
 
     val main = Group(
-        ui = this,
-        Positions(0.px, 0.px),
-        Sizes(width, height)
+        aurora = this,
+        position = at(0.px, 0.px),
+        size = size(widthPx, heightPx)
     )
 
     fun initialize(width: Int, height: Int) {
-        this.width.value = width.toFloat()
-        this.height.value = height.toFloat()
+        this.width = width
+        this.height = height
         main.size()
         main.layout()
         renderer.resize(width.toFloat(), height.toFloat())
@@ -63,8 +75,8 @@ class Aurora(
 }
 
     fun resize(width: Int, height: Int) {
-        this.width.value = width.toFloat()
-        this.height.value = height.toFloat()
+        this.width = width
+        this.height = height
 
         main.size()
         main.layout()

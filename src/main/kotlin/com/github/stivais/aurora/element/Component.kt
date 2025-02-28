@@ -1,8 +1,8 @@
 package com.github.stivais.aurora.element
 
 import com.github.stivais.aurora.Aurora
-import com.github.stivais.aurora.constraints.Positions
-import com.github.stivais.aurora.constraints.Sizes
+import com.github.stivais.aurora.constraints.Constraint
+import com.github.stivais.aurora.constraints.Constraints
 import com.github.stivais.aurora.utils.loop
 
 /*
@@ -20,10 +20,9 @@ Percent will get position based on first component that doesn't rely on children
 
  */
 abstract class Component(
-    val ui: Aurora,
-
-    val positions: Positions,
-    val size: Sizes,
+    val aurora: Aurora,
+    val position: Constraints<Constraint.Position>,
+    val size: Constraints<Constraint.Size>,
 ) {
     var parent: Component? = null
 
@@ -46,17 +45,17 @@ abstract class Component(
             it.position(x, y)
             it.layout()
         }
-        ui.reupload = true
+        aurora.reupload = true
     }
 
     open fun size() {
-        width = size.width.calculate(this, 2)
-        height = size.height.calculate(this, 3)
+        width = size.first.calculate(this, 3)
+        height = size.second.calculate(this, 4)
     }
 
     fun position(x: Float, y: Float) {
-        internalX = positions.x.calculate(this, 0)
-        internalY = positions.y.calculate(this, 1)
+        internalX = position.first.calculate(this, 1)
+        internalY = position.second.calculate(this, 2)
         this.x = internalX + x
         this.y = internalY + y
     }
@@ -78,5 +77,15 @@ abstract class Component(
         if (children == null) children = arrayListOf()
         children!!.add(component)
         component.parent = this
+    }
+
+    fun measurement(type: Int): Float {
+        return when (type) {
+             1 -> x
+             2 -> y
+             3 -> width
+             4 -> height
+            else -> throw IllegalArgumentException("Measurement type must be between 1-4")
+        }
     }
 }
