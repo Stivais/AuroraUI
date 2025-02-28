@@ -75,14 +75,4 @@ class Aurora(
     fun cleanup() {
         renderer.cleanup()
     }
-
-//    fun outline(renderer: RendererOld, x: Float, y: Float, width: Float, height: Float) {
-//        renderer {
-//            color(Color.WHITE, palette)
-//            quad(x, y, width, 1f)
-//            quad(x, y + height, width, 1f)
-//            quad(x, y, 1f, height)
-//            quad(x + width, y, 1f, height)
-//        }
-//    }
 }

@@ -1,4 +1,4 @@
-package com.github.stivais.com.github.stivais
+package com.github.stivais
 
 import com.github.stivais.aurora.Aurora
 import org.lwjgl.glfw.Callbacks

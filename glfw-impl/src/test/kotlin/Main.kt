@@ -2,9 +2,7 @@ import com.github.stivais.aurora.animation.Animation
 import com.github.stivais.aurora.element.Component
 import com.github.stivais.aurora.renderer.impl.RendererImpl
 import com.github.stivais.aurora.utils.loop
-import com.github.stivais.com.github.stivais.GLFWWindow
-
-//import com.github.stivais.aurora.renderer.gl20.RendererImploLD
+import com.github.stivais.GLFWWindow
 
 fun main() {
 
@@ -39,8 +37,8 @@ fun main() {
         fps++
         val start = System.currentTimeMillis()
         if (start - time > 1000) {
-//            animTest.animate(1f * 1_000_000_000, style = Animation.Style.Linear)
-//            mainRedrawTemp.redraw()
+            animTest.animate(1f * 1_000_000_000, style = Animation.Style.Linear)
+            mainRedrawTemp.redraw()
             window.setTitle("aurora - fps: $fps")
             time = start
             fps = 0

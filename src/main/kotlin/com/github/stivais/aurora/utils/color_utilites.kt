@@ -1,3 +1,5 @@
+@file:Suppress("nothing_to_inline", "unused")
+
 package com.github.stivais.aurora.utils
 
 import com.github.stivais.aurora.color.Color
@@ -31,9 +33,8 @@ inline val Color.alpha
  * Compacts 4 integers representing red, green, blue and alpha into a single integer
  */
 inline fun getRGBA(red: Int, green: Int, blue: Int, alpha: Int): Int {
-        return ((alpha shl 24) and 0xFF000000.toInt()) or ((red shl 16) and 0x00FF0000) or ((green shl 8) and 0x0000FF00) or (blue and 0x000000FF)
+    return ((alpha shl 24) and 0xFF000000.toInt()) or ((red shl 16) and 0x00FF0000) or ((green shl 8) and 0x0000FF00) or (blue and 0x000000FF)
 }
-
 
 /**
  * Compacts 3 integers representing red, green, blue and an alpha value into a single integer

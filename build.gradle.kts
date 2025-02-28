@@ -6,8 +6,9 @@ plugins {
 group = "com.github.stivais"
 version = project.findProperty("version") as String
 
-val lwjglVersion = "3.3.5-SNAPSHOT"
-val lwjglNatives = "natives-windows"
+val lwjglVersion = "3.3.6"
+
+val lwjglNatives = listOf("windows", "linux")
 
 repositories {
     mavenCentral()
@@ -16,7 +17,6 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
-
     implementation(platform("org.lwjgl:lwjgl-bom:$lwjglVersion"))
 
     compileOnly("org.lwjgl", "lwjgl")

@@ -57,26 +57,4 @@ fun testUI(renderer: Renderer) = aurora(renderer) {
             color = Color.WHITE
         )
     }
-
-//    println(
-//        measureNanoTime {
-//            repeat(50) {
-//                block(
-//                    center(),
-//                    size(animTest, animTest),
-//                    color = Color.BLUE
-//                )
-//            }
-//        }
-//    )
-
-
-//    row(at(Center, 10.px)) {
-//        repeat(5) {
-//            block(
-//                size = size(100.px, 100.px),
-//                color = Color.RGB(255, 0, 0, 0.25f)
-//            )
-//        }
-//    }
 }
