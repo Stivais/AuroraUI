@@ -4,7 +4,6 @@ import com.github.stivais.aurora.Aurora
 import com.github.stivais.aurora.color.Color
 import com.github.stivais.aurora.constraints.Constraint
 import com.github.stivais.aurora.constraints.Constraints
-import com.github.stivais.aurora.renderer.Renderer
 
 // handle all rendering stuff etc
 abstract class Drawable(
@@ -14,6 +13,6 @@ abstract class Drawable(
     val color: Color,
 ) : Component(aurora, position, size) {
 
-    abstract fun generate(renderer: Renderer)
+    abstract fun generate()
 
 }

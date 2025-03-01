@@ -1,19 +1,18 @@
+import com.github.stivais.GLFWWindow
 import com.github.stivais.aurora.animation.Animation
 import com.github.stivais.aurora.element.Component
-import com.github.stivais.aurora.renderer.impl.RendererImpl
-import com.github.stivais.aurora.utils.loop
-import com.github.stivais.GLFWWindow
 import com.github.stivais.aurora.utils.Timing.Companion.seconds
+import com.github.stivais.aurora.utils.loop
 
 fun main() {
 
     val window = GLFWWindow(500, 500)
 
-    val renderer = RendererImpl()
-    val aurora = testUI(renderer)
+//    val renderer = RendererImpl()
+    val aurora = testUI()
 
     aurora.initialize(500, 500)
-    aurora.upload()
+//    aurora.upload()
 
 
     var amount = 0

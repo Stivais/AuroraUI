@@ -7,10 +7,9 @@ import com.github.stivais.aurora.dsl.px
 import com.github.stivais.aurora.dsl.size
 import com.github.stivais.aurora.element.ComponentScope
 import com.github.stivais.aurora.element.impl.Group
-import com.github.stivais.aurora.renderer.Renderer
 
-fun aurora(renderer: Renderer, block: ComponentScope<Group>.() -> Unit): Aurora {
-    val ui = Aurora(renderer)
+fun aurora(block: ComponentScope<Group>.() -> Unit): Aurora {
+    val ui = Aurora()
     ComponentScope(ui.main).block()
     return ui
 }
@@ -21,7 +20,7 @@ val animTest = Animatable(from = 20.px, 125.px)
 
 lateinit var mainRedrawTemp: ComponentScope<*>
 
-fun testUI(renderer: Renderer) = aurora(renderer) {
+fun testUI() = aurora() {
 
 //    colorPicker()
 
