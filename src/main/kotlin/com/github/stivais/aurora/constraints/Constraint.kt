@@ -7,7 +7,7 @@ class Constraints<T: Constraint>(
     val second: Measurement<T>,
 )
 
-sealed interface Constraint {
+interface Constraint {
 
     interface Position : Constraint
 

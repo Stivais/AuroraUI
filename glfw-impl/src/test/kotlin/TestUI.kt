@@ -1,12 +1,12 @@
 import com.github.stivais.aurora.Aurora
 import com.github.stivais.aurora.color.Color
+import com.github.stivais.aurora.component.ComponentScope
+import com.github.stivais.aurora.component.impl.Group
 import com.github.stivais.aurora.constraints.measurements.impl.Animatable
 import com.github.stivais.aurora.constraints.measurements.impl.Center
 import com.github.stivais.aurora.dsl.at
 import com.github.stivais.aurora.dsl.px
 import com.github.stivais.aurora.dsl.size
-import com.github.stivais.aurora.element.ComponentScope
-import com.github.stivais.aurora.element.impl.Group
 
 fun aurora(block: ComponentScope<Group>.() -> Unit): Aurora {
     val ui = Aurora()
@@ -26,14 +26,19 @@ fun testUI() = aurora() {
 
 
 //    val px = 100.px
-    block(
-        size = size(animTest, animTest),
-        color = Color.RED
-    )
-
+//    block(
+//        size = size(animTest, animTest),
+//        color = Color.RED
+//    )
+//
+//    block(
+//        at = center(),
+//        size = size(animTest, animTest),
+//        color = Color.RED
+//    )
     mainRedrawTemp = this
 
-//    mainRedrawTemp = row(center()) {
+    row(center()) {
         block(
             size = size(animTest, animTest),
             color = Color.RED
@@ -50,5 +55,5 @@ fun testUI() = aurora() {
             size = size(animTest, animTest),
             color = Color.WHITE
         )
-//    }
+    }
 }

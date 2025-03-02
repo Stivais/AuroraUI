@@ -1,16 +1,16 @@
 @file:Suppress("nothing_to_inline")
 
-package com.github.stivais.aurora.element
+package com.github.stivais.aurora.component
 
 import com.github.stivais.aurora.color.Color
+import com.github.stivais.aurora.component.impl.Block
+import com.github.stivais.aurora.component.impl.Column
+import com.github.stivais.aurora.component.impl.Row
 import com.github.stivais.aurora.constraints.Constraint
 import com.github.stivais.aurora.constraints.Constraints
 import com.github.stivais.aurora.constraints.measurements.impl.Undefined
 import com.github.stivais.aurora.dsl.at
 import com.github.stivais.aurora.dsl.size
-import com.github.stivais.aurora.element.impl.Block
-import com.github.stivais.aurora.element.impl.Column
-import com.github.stivais.aurora.element.impl.Row
 
 open class ComponentScope<C : Component>(val component: C) {
 

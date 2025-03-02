@@ -1,6 +1,6 @@
 import com.github.stivais.GLFWWindow
 import com.github.stivais.aurora.animation.Animation
-import com.github.stivais.aurora.element.Component
+import com.github.stivais.aurora.component.Component
 import com.github.stivais.aurora.utils.Timing.Companion.seconds
 import com.github.stivais.aurora.utils.loop
 

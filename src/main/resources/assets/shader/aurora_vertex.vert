@@ -1,28 +1,22 @@
-#version 430 core
+#version 330
 
-struct Vertex {
-    vec2 position;
-    uint color;
-};
-
-layout(std430, binding = 0) readonly buffer VertexData {
-    Vertex vertices[];
-};
+layout(location = 0) in vec2 pos;
+layout(location = 1) in uint color;
+layout(location = 2) in vec2 uvs;
 
 uniform mat4 projection;
 
 out vec4 v_color;
+out vec2 texCoords;
 
 void main() {
-    Vertex vertex = vertices[gl_VertexID];
-    gl_Position = projection * vec4(vertex.position, 1.0, 1.0);
+    gl_Position = projection * vec4(pos, 1.0, 1.0);
 
-    uint packed_color = vertex.color;
-
-    float alpha = float((packed_color >> 24u) & 0xFFu) / 255.0;
-    float red   = float((packed_color >> 16u) & 0xFFu) / 255.0;
-    float green = float((packed_color >> 8u) & 0xFFu) / 255.0;
-    float blue  = float(packed_color & 0xFFu) / 255.0;
+    float alpha = float((color >> 24u) & 0xFFu) / 255.0;
+    float red   = float((color >> 16u) & 0xFFu) / 255.0;
+    float green = float((color >> 8u) & 0xFFu) / 255.0;
+    float blue  = float(color & 0xFFu) / 255.0;
 
     v_color = vec4(red, green, blue, alpha);
+    texCoords = uvs;
 }

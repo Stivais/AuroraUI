@@ -18,6 +18,7 @@ sealed interface Color {
         ) : this(getRGBA(red, green, blue, alpha))
     }
 
+    // todo: fix
     class Animated(from: Color, to: Color) : Color {
 //        over
 

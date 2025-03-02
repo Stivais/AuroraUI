@@ -1,9 +1,9 @@
 package com.github.stivais.aurora.constraints.measurements.impl
 
 import com.github.stivais.aurora.animation.Animation
+import com.github.stivais.aurora.component.Component
 import com.github.stivais.aurora.constraints.Constraint
 import com.github.stivais.aurora.constraints.measurements.Measurement
-import com.github.stivais.aurora.element.Component
 import com.github.stivais.aurora.utils.Timing
 
 class Animatable<E : Constraint>(

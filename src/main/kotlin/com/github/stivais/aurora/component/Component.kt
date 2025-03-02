@@ -1,4 +1,4 @@
-package com.github.stivais.aurora.element
+package com.github.stivais.aurora.component
 
 import com.github.stivais.aurora.Aurora
 import com.github.stivais.aurora.constraints.Constraint
