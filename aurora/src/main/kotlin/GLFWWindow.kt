@@ -31,6 +31,10 @@ class GLFWWindow(
 
     private var offset = 0
 
+    var fps = 0
+    private var frames = 0
+    private var last = 0L
+
     init {
         glfwSetErrorCallback { code, desc ->
             val stack = Thread.currentThread().stackTrace.drop(4).joinToString("\n\t at ")
@@ -50,6 +54,7 @@ class GLFWWindow(
 
         glfwMakeContextCurrent(handle)
         createCapabilities()
+        glfwSwapInterval(0)
     }
 
     private fun callbacks(ui: AuroraUI) {
@@ -68,7 +73,7 @@ class GLFWWindow(
                 ui.eventManager.onMouseRelease(button)
             }
         }
-        glfwSetScrollCallback(handle) { _, x, y ->
+        glfwSetScrollCallback(handle) { _, _, y ->
             ui.eventManager.onMouseScroll(y.toFloat())
         }
 
@@ -101,6 +106,14 @@ class GLFWWindow(
         callbacks(ui)
         ui.initialize(width, height, this)
         while (!glfwWindowShouldClose(handle)) {
+            val start = System.nanoTime()
+            frames++
+            if (start - last >= 1_000_000_000) {
+                last = start
+                fps = frames
+                frames = 0
+            }
+
             glViewport(0, 0, width, height)
             glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
             glClearColor(0f, 0f, 0f, 0f)

@@ -12,12 +12,11 @@ import com.github.stivais.aurora.elements.ElementScope
 import com.github.stivais.aurora.elements.Layout.Companion.section
 import com.github.stivais.aurora.elements.impl.Block.Companion.outline
 import com.github.stivais.aurora.elements.impl.layout.Column.Companion.sectionRow
-import com.github.stivais.aurora.elements.impl.popup
 import com.github.stivais.aurora.renderer.data.Gradient
 import com.github.stivais.aurora.renderer.data.Image
 import com.github.stivais.aurora.utils.color
 
-fun ElementScope<*>.colorPicker(value: Color.HSB) = popup(constrain(w = Bounding, h = Bounding), smooth = true) {
+fun ElementScope<*>.colorPicker(value: Color.HSB) = group(size(w = Bounding, h = Bounding)/*, smooth = true*/) {
     val colorMaxBrightness = color { java.awt.Color.HSBtoRGB(value.hue, value.saturation, 1f) }
     val colorOnlyHue = color { java.awt.Color.HSBtoRGB(value.hue, 1f, 1f) }
 

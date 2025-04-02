@@ -106,7 +106,7 @@ sealed interface Lifetime : AuroraEvent.NonSpecific {
 /**
  * # Keyboard *Events*
  *
- * Events for keyboard inputs.
+ * Events for keyboard inputs, these require a focused element to register.
  *
  * Implements [AuroraEvent.NonSpecific].
  *
@@ -116,10 +116,23 @@ sealed interface Lifetime : AuroraEvent.NonSpecific {
  */
 sealed interface Keyboard : AuroraEvent.NonSpecific {
 
+    /**
+     * Gets posted when a key, that is representable by a character, gets pressed.
+     */
     data class CharTyped(val key: Char = ' ', val mods: Modifier = Modifier(0)) : Keyboard
 
+    /**
+     * Gets posted when a key, that isn't representable by a character, gets pressed.
+     *
+     * @see Keys
+     */
     data class KeyTyped(val key: Keys = Keys.UNKNOWN, val mods: Modifier = Modifier(0)) : Keyboard
 
+    /**
+     * Gets posted when a key is pressed using its keycode.
+     *
+     * Only use this if you directly need the keycode, otherwise rely on [CharTyped] or [KeyTyped].
+     */
     data class CodeTyped(val code: Int = 0, val mods: Modifier = Modifier(0)) : Keyboard
 }
 

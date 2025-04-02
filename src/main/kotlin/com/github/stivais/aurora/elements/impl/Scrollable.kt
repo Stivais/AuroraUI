@@ -24,6 +24,9 @@ class Scrollable(
 
     init {
         scissors = true
+
+        if (constraints.width.undefined()) constraints.width = Bounding
+        if (constraints.height.undefined()) constraints.height = Bounding
     }
 
     private var offsetY: Float = 0f
