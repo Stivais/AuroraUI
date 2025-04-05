@@ -15,12 +15,16 @@ import java.nio.file.Files
  *
  * The image type can be either raster (e.g. PNG) or vector (e.g. SVG).
  *
+ * The image can be created either from:
+ * - A resource path (file path, classpath resource, or HTTP URL)
+ * - Directly from an InputStream
+ *
  * @param resourcePath can be an url to a file, or to retrieve data on the internet (http)
  */
-class Image(
-    val resourcePath: String,
-    val type: Type = getType(resourcePath),
-) {
+class Image {
+    val resourcePath: String
+    val type: Type
+
     // currently unused
     var width: Float = 0f
     var height: Float = 0f
@@ -30,7 +34,13 @@ class Image(
      */
     val stream: InputStream
 
-    init {
+    constructor(
+        resourcePath: String,
+        type: Type = getType(resourcePath)
+    ) {
+        this.resourcePath = resourcePath
+        this.type = type
+
         val trimmedPath = resourcePath.trim()
         stream = if (trimmedPath.startsWith("http")) {
             setupConnection(trimmedPath)
@@ -42,6 +52,12 @@ class Image(
                 this::class.java.getResourceAsStream(trimmedPath) ?: throw FileNotFoundException(trimmedPath)
             }
         }
+    }
+
+    constructor(inputStream: InputStream, type: Type = Type.RASTER) {
+        this.resourcePath = "direct-stream"
+        this.type = type
+        this.stream = inputStream
     }
 
     /**
