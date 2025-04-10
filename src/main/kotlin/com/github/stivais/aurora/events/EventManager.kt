@@ -3,7 +3,7 @@
 package com.github.stivais.aurora.events
 
 import com.github.stivais.aurora.AuroraUI
-import com.github.stivais.aurora.elements.Element
+import com.github.stivais.aurora.components.Component
 import com.github.stivais.aurora.input.Keys
 import com.github.stivais.aurora.input.Modifier
 import com.github.stivais.aurora.utils.loop
@@ -35,12 +35,12 @@ class EventManager(private val ui: AuroraUI) {
     /**
      * Current top-most hovered element, which can accept input.
      */
-    private var hoveredElement: Element? = null
+    private var hoveredElement: Component? = null
 
     /**
      * Current focused element inside a UI.
      */
-    var focused: Element? = null
+    var focused: Component? = null
         set(value) {
             if (field == value) return
             field?.acceptFocused(Focused.Lost)
@@ -166,7 +166,7 @@ class EventManager(private val ui: AuroraUI) {
      * A [bubbling event](https://en.wikipedia.org/wiki/Event_bubbling) starts from an element,
      * and climbs up it's hierarchy until it is consumed.
      */
-    fun post(event: AuroraEvent, element: Element? = hoveredElement): Boolean {
+    fun post(event: AuroraEvent, element: Component? = hoveredElement): Boolean {
         var current = element
         while (current != null) {
             if (current.accept(event)) {
@@ -180,7 +180,7 @@ class EventManager(private val ui: AuroraUI) {
     /**
      * Dispatches an event to every single element inside a UI.
      */
-    fun postToAll(event: AuroraEvent, element: Element = ui.main) {
+    fun postToAll(event: AuroraEvent, element: Component = ui.main) {
         element.accept(event)
         element.children?.loop {
             postToAll(event, it)
@@ -194,8 +194,8 @@ class EventManager(private val ui: AuroraUI) {
         hoveredElement = getHovered(mouseX, mouseY)
     }
 
-    private fun getHovered(x: Float, y: Float, element: Element = ui.main): Element? {
-        var result: Element? = null
+    private fun getHovered(x: Float, y: Float, element: Component = ui.main): Component? {
+        var result: Component? = null
         if (element.renders && element.isInside(x, y)) {
             element.children?.reverseLoop { it ->
                 if (result == null) {
@@ -214,7 +214,7 @@ class EventManager(private val ui: AuroraUI) {
         return result
     }
 
-    private fun unmarkHovered(element: Element) {
+    private fun unmarkHovered(element: Component) {
         // early exit, since if it acceptsInput but isn't hovered,
         // means that any element under this one will never be hovered
         if (!element.hovered && element.acceptsInput) return

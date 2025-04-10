@@ -4,7 +4,7 @@ package com.github.stivais.aurora.constraints.impl.measurements
 
 import com.github.stivais.aurora.animations.Animation
 import com.github.stivais.aurora.constraints.Constraint
-import com.github.stivais.aurora.elements.Element
+import com.github.stivais.aurora.components.Component
 
 /**
  * # Animatable
@@ -13,7 +13,7 @@ import com.github.stivais.aurora.elements.Element
  */
 class Animatable(
     private var from: Constraint,
-    private var to: Constraint,
+    var to: Constraint,
 ) : Constraint.Measurement {
 
     constructor(from: Constraint, to: Constraint, swapIf: Boolean) : this(from, to,) {
@@ -35,9 +35,9 @@ class Animatable(
     // acts as from, if it started animating during an existing one, to prevent snapping
     private var before: Float? = null
 
-    override fun calculate(element: Element, type: Int): Float {
+    override fun calculate(element: Component, type: Int): Float {
         if (animation != null) {
-            element.redraw()
+            element.parent?.redraw()
             val progress = animation!!.get()
             val from = before ?: from.calculate(element, type)
             current = from + (to.calculate(element, type) - from) * progress
@@ -70,6 +70,7 @@ class Animatable(
         animation = if (animation != null) {
             before = current
             swap()
+            animation!!.onFinish?.invoke()
             Animation(duration * animation!!.get(), style)
         } else {
             Animation(duration, style)
@@ -130,7 +131,7 @@ class Animatable(
 
         fun to(to: Float) = if (animation != null) this.to = to else current = to
 
-        override fun calculate(element: Element, type: Int): Float {
+        override fun calculate(element: Component, type: Int): Float {
             if (animation != null) {
                 element.redraw()
                 current = from + (to - from) * animation!!.get()

@@ -3,8 +3,8 @@
 
 package com.github.stivais.aurora.dsl
 
-import com.github.stivais.aurora.elements.Element
-import com.github.stivais.aurora.elements.ElementScope
+import com.github.stivais.aurora.components.Component
+import com.github.stivais.aurora.components.scope.ComponentScope
 import com.github.stivais.aurora.events.*
 import kotlin.experimental.ExperimentalTypeInference
 
@@ -23,8 +23,8 @@ import kotlin.experimental.ExperimentalTypeInference
  * Has an optional return value.
  */
 @OverloadResolutionByLambdaReturnType
-fun ElementScope<*>.onClick(button: Int = 0, block: (Mouse.Clicked) -> Boolean) {
-    element.registerEvent(Mouse.Clicked(button), block)
+fun ComponentScope<*>.onClick(button: Int = 0, block: (Mouse.Clicked) -> Boolean) {
+    component.registerEvent(Mouse.Clicked(button), block)
 }
 
 /**
@@ -34,8 +34,8 @@ fun ElementScope<*>.onClick(button: Int = 0, block: (Mouse.Clicked) -> Boolean) 
  */
 @JvmName("onClickUnit")
 @OverloadResolutionByLambdaReturnType
-inline fun ElementScope<*>.onClick(button: Int = 0, crossinline block: (Mouse.Clicked) -> Unit) {
-    element.registerEventUnit(Mouse.Clicked(button), block)
+inline fun ComponentScope<*>.onClick(button: Int = 0, crossinline block: (Mouse.Clicked) -> Unit) {
+    component.registerEventUnit(Mouse.Clicked(button), block)
 }
 
 
@@ -46,8 +46,8 @@ inline fun ElementScope<*>.onClick(button: Int = 0, crossinline block: (Mouse.Cl
  */
 @Suppress
 @OverloadResolutionByLambdaReturnType
-fun ElementScope<*>.onClick(nonSpecific: Boolean, block: (Mouse.Clicked.NonSpecific) -> Boolean) {
-    element.registerEvent(Mouse.Clicked.NonSpecific(0 /* doesn't matter */), block)
+fun ComponentScope<*>.onClick(nonSpecific: Boolean, block: (Mouse.Clicked.NonSpecific) -> Boolean) {
+    component.registerEvent(Mouse.Clicked.NonSpecific(0 /* doesn't matter */), block)
 }
 
 
@@ -58,8 +58,8 @@ fun ElementScope<*>.onClick(nonSpecific: Boolean, block: (Mouse.Clicked.NonSpeci
  */
 @JvmName("onClickNSUnit")
 @OverloadResolutionByLambdaReturnType
-inline fun ElementScope<*>.onClick(nonSpecific: Boolean, crossinline block: (Mouse.Clicked.NonSpecific) -> Unit) {
-    element.registerEventUnit(Mouse.Clicked.NonSpecific(0), block)
+inline fun ComponentScope<*>.onClick(nonSpecific: Boolean, crossinline block: (Mouse.Clicked.NonSpecific) -> Unit) {
+    component.registerEventUnit(Mouse.Clicked.NonSpecific(0), block)
 }
 
 /**
@@ -67,8 +67,8 @@ inline fun ElementScope<*>.onClick(nonSpecific: Boolean, crossinline block: (Mou
  *
  * Always returns false.
  */
-inline fun ElementScope<*>.onRelease(button: Int = 0, crossinline block: (Mouse.Released) -> Unit) {
-    element.registerEventUnit(Mouse.Released(button), block)
+inline fun ComponentScope<*>.onRelease(button: Int = 0, crossinline block: (Mouse.Released) -> Unit) {
+    component.registerEventUnit(Mouse.Released(button), block)
 }
 
 /**
@@ -77,8 +77,8 @@ inline fun ElementScope<*>.onRelease(button: Int = 0, crossinline block: (Mouse.
  * Has an optional return value.
  */
 @OverloadResolutionByLambdaReturnType
-fun ElementScope<*>.onScroll(block: (Mouse.Scrolled) -> Boolean) {
-    element.registerEvent(Mouse.Scrolled(0f), block)
+fun ComponentScope<*>.onScroll(block: (Mouse.Scrolled) -> Boolean) {
+    component.registerEvent(Mouse.Scrolled(0f), block)
 }
 
 /**
@@ -90,8 +90,8 @@ fun ElementScope<*>.onScroll(block: (Mouse.Scrolled) -> Boolean) {
  */
 @JvmName("onScrollUnit")
 @OverloadResolutionByLambdaReturnType
-inline fun ElementScope<*>.onScroll(crossinline block: (Mouse.Scrolled) -> Unit) {
-    element.registerEventUnit(Mouse.Scrolled(0f), block)
+inline fun ComponentScope<*>.onScroll(crossinline block: (Mouse.Scrolled) -> Unit) {
+    component.registerEventUnit(Mouse.Scrolled(0f), block)
 }
 
 /**
@@ -100,8 +100,8 @@ inline fun ElementScope<*>.onScroll(crossinline block: (Mouse.Scrolled) -> Unit)
  * Has an optional return value.
  */
 @OverloadResolutionByLambdaReturnType
-fun ElementScope<*>.onMouseMove(block: (Mouse.Moved) -> Boolean) {
-    element.registerEvent(Mouse.Moved, block)
+fun ComponentScope<*>.onMouseMove(block: (Mouse.Moved) -> Boolean) {
+    component.registerEvent(Mouse.Moved, block)
 }
 
 /**
@@ -111,8 +111,8 @@ fun ElementScope<*>.onMouseMove(block: (Mouse.Moved) -> Boolean) {
  */
 @JvmName("_onMouseMove")
 @OverloadResolutionByLambdaReturnType
-inline fun ElementScope<*>.onMouseMove(crossinline block: (Mouse.Moved) -> Unit) {
-    element.registerEventUnit(Mouse.Moved, block)
+inline fun ComponentScope<*>.onMouseMove(crossinline block: (Mouse.Moved) -> Unit) {
+    component.registerEventUnit(Mouse.Moved, block)
 }
 
 /**
@@ -120,8 +120,8 @@ inline fun ElementScope<*>.onMouseMove(crossinline block: (Mouse.Moved) -> Unit)
  *
  * Returns false by default.
  */
-inline fun ElementScope<*>.onMouseEnter(crossinline block: () -> Unit) {
-    element.registerEvent(Mouse.Entered) { block(); false }
+inline fun ComponentScope<*>.onMouseEnter(crossinline block: () -> Unit) {
+    component.registerEvent(Mouse.Entered) { block(); false }
 }
 
 /**
@@ -129,8 +129,8 @@ inline fun ElementScope<*>.onMouseEnter(crossinline block: () -> Unit) {
  *
  * Returns false by default.
  */
-inline fun ElementScope<*>.onMouseExit(crossinline block: () -> Unit) {
-    element.registerEvent(Mouse.Exited) { block(); false }
+inline fun ComponentScope<*>.onMouseExit(crossinline block: () -> Unit) {
+    component.registerEvent(Mouse.Exited) { block(); false }
 }
 
 /**
@@ -138,9 +138,9 @@ inline fun ElementScope<*>.onMouseExit(crossinline block: () -> Unit) {
  *
  * Returns false by default.
  */
-inline fun ElementScope<*>.onMouseEnterExit(crossinline block: () -> Unit) {
-    element.registerEvent(Mouse.Entered) { block(); false }
-    element.registerEvent(Mouse.Exited) { block(); false }
+inline fun ComponentScope<*>.onMouseEnterExit(crossinline block: () -> Unit) {
+    component.registerEvent(Mouse.Entered) { block(); false }
+    component.registerEvent(Mouse.Exited) { block(); false }
 }
 
 //-----------------//
@@ -153,8 +153,8 @@ inline fun ElementScope<*>.onMouseEnterExit(crossinline block: () -> Unit) {
  * Has an optional return value.
  */
 @OverloadResolutionByLambdaReturnType
-fun ElementScope<*>.onKeycodePressed(block: (Keyboard.CodeTyped) -> Boolean) {
-    element.registerEvent(Keyboard.CodeTyped(), block)
+fun ComponentScope<*>.onKeycodePressed(block: (Keyboard.CodeTyped) -> Boolean) {
+    component.registerEvent(Keyboard.CodeTyped(), block)
 }
 
 //-----------------//
@@ -166,8 +166,8 @@ fun ElementScope<*>.onKeycodePressed(block: (Keyboard.CodeTyped) -> Boolean) {
  *
  * Returns false by default.
  */
-inline fun ElementScope<*>.onAdd(crossinline block: (Lifetime.Initialized) -> Unit) {
-    element.registerEventUnit(Lifetime.Initialized, block)
+inline fun ComponentScope<*>.onAdd(crossinline block: (Lifetime.Initialized) -> Unit) {
+    component.registerEventUnit(Lifetime.Initialized, block)
 }
 
 /**
@@ -175,8 +175,8 @@ inline fun ElementScope<*>.onAdd(crossinline block: (Lifetime.Initialized) -> Un
  *
  * Returns false by default.
  */
-inline fun ElementScope<*>.onRemove(crossinline block: (Lifetime.Uninitialized) -> Unit) {
-    element.registerEventUnit(Lifetime.Uninitialized, block)
+inline fun ComponentScope<*>.onRemove(crossinline block: (Lifetime.Uninitialized) -> Unit) {
+    component.registerEventUnit(Lifetime.Uninitialized, block)
 }
 
 //-----------------//
@@ -188,8 +188,8 @@ inline fun ElementScope<*>.onRemove(crossinline block: (Lifetime.Uninitialized) 
  *
  * Returns false by default.
  */
-inline fun ElementScope<*>.onFocus(crossinline block: (Focused.Gained) -> Unit) {
-    element.registerEventUnit(Focused.Gained, block)
+inline fun ComponentScope<*>.onFocus(crossinline block: (Focused.Gained) -> Unit) {
+    component.registerEventUnit(Focused.Gained, block)
 }
 
 /**
@@ -197,8 +197,8 @@ inline fun ElementScope<*>.onFocus(crossinline block: (Focused.Gained) -> Unit) 
  *
  * Returns false by default.
  */
-inline fun ElementScope<*>.onFocusLost(crossinline block: (Focused.Lost) -> Unit) {
-    element.registerEventUnit(Focused.Lost, block)
+inline fun ComponentScope<*>.onFocusLost(crossinline block: (Focused.Lost) -> Unit) {
+    component.registerEventUnit(Focused.Lost, block)
 }
 
 /**
@@ -206,21 +206,21 @@ inline fun ElementScope<*>.onFocusLost(crossinline block: (Focused.Lost) -> Unit
  *
  * Returns false by default.
  */
-inline fun ElementScope<*>.onFocusChanged(crossinline block: () -> Unit) {
-    element.registerEvent(Focused.Gained) { block(); false }
-    element.registerEvent(Focused.Lost) { block(); false }
+inline fun ComponentScope<*>.onFocusChanged(crossinline block: () -> Unit) {
+    component.registerEvent(Focused.Gained) { block(); false }
+    component.registerEvent(Focused.Lost) { block(); false }
 }
 
 /**
  * Registers an event listener, which always returns false.
  *
- * If the event inherits [AuroraEvent.NonSpecific], it's [Class] will be added to [events][Element.events].
+ * If the event inherits [AuroraEvent.NonSpecific], it's [Class] will be added to [events][Component.events].
  *
- * If the event isn't a lifetime event, it will mark [acceptsInput][Element.acceptsInput] as true.
+ * If the event isn't a lifetime event, it will mark [acceptsInput][Component.acceptsInput] as true.
  *
- * @see Element.registerEvent
+ * @see Component.registerEvent
  */
-inline fun <E : AuroraEvent> Element.registerEventUnit(event: E, crossinline block: (E) -> Unit) {
+inline fun <E : AuroraEvent> Component.registerEventUnit(event: E, crossinline block: (E) -> Unit) {
     registerEvent(event) {
         block(it)
         false

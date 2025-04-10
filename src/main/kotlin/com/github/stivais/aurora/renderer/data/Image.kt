@@ -11,87 +11,86 @@ import java.nio.file.Files
 /**
  * # Image
  *
- * This class stores data for an image.
- *
- * The image type can be either raster (e.g. PNG) or vector (e.g. SVG).
- *
- * The image can be created either from:
- * - A resource path (file path, classpath resource, or HTTP URL)
- * - Directly from an InputStream
- *
- * @param resourcePath can be an url to a file, or to retrieve data on the internet (http)
+ * This class stores data for loading images to textures.
+ * Image type can be a PNG or an [SVG](https://en.wikipedia.org/wiki/SVG) image.
  */
-class Image {
-    val resourcePath: String
-    val type: Type
+class Image private constructor(
+    val identifier: String,
+    val type: Type,
+    val stream: InputStream,
+) {
+
+    /**
+     * Loads an image from a resource path.
+     *
+     * @param resourcePath Path to image.
+     * @param type Type of image. it will attempt to assume the type, based on the resource path
+     */
+    constructor(
+        resourcePath: String,
+        type: Type = getType(resourcePath)
+    ) : this(resourcePath, type, getStream(resourcePath))
 
     // currently unused
     var width: Float = 0f
     var height: Float = 0f
 
-    /**
-     * Input stream for this image
-     */
-    val stream: InputStream
-
-    constructor(
-        resourcePath: String,
-        type: Type = getType(resourcePath)
-    ) {
-        this.resourcePath = resourcePath
-        this.type = type
-
-        val trimmedPath = resourcePath.trim()
-        stream = if (trimmedPath.startsWith("http")) {
-            setupConnection(trimmedPath)
-        } else {
-            val file = File(trimmedPath)
-            if (file.exists() && file.isFile) {
-                Files.newInputStream(file.toPath())
-            } else {
-                this::class.java.getResourceAsStream(trimmedPath) ?: throw FileNotFoundException(trimmedPath)
-            }
-        }
-    }
-
-    constructor(inputStream: InputStream, type: Type = Type.RASTER) {
-        this.resourcePath = "direct-stream"
-        this.type = type
-        this.stream = inputStream
-    }
-
-    /**
-     * [Image] type.
-     *
-     * Raster represents formats like PNG.
-     * Vector represents the SVG format.
-     */
     enum class Type {
-        RASTER,
-        VECTOR
+        PNG,
+        SVG,
     }
 
-    override fun hashCode() = resourcePath.hashCode()
-
-    override fun equals(other: Any?): Boolean {
-        if (other === this) return true
-        if (other !is Image) return false
-        return resourcePath == other.resourcePath
-    }
-
-    /**
-     * Gets a bytebuffer, based on the [input stream][stream]
-     */
     fun buffer(): ByteBuffer {
+//        when (type) {
+//            Type.PNG -> {
+//                val bytes
+//            }
+//            Type.SVG -> {}
+//        }
+//
         val bytes: ByteArray = stream.readBytes()
         stream.close()
         val buffer = ByteBuffer.allocateDirect(bytes.size).order(ByteOrder.nativeOrder()).put(bytes).also { it.flip() }
         return buffer
     }
 
+    override fun hashCode() = identifier.hashCode()
+
+    override fun equals(other: Any?): Boolean {
+        if (other === this) return true
+        if (other !is Image) return false
+        return identifier == other.identifier
+    }
+
     companion object {
+
+        /**
+         * Loads an [Image] from an input stream.
+         *
+         * Must have a unique identifier to not override other images.
+         */
+        fun fromInputStream(
+            identifier: String,
+            stream: InputStream,
+            type: Type,
+        ) = Image(identifier, type, stream)
+
+        private fun getStream(path: String): InputStream {
+            val trimmedPath = path.trim()
+            return if (trimmedPath.startsWith("http")) {
+                setupConnection(trimmedPath)
+            } else {
+                val file = File(trimmedPath)
+                if (file.exists() && file.isFile) {
+                    Files.newInputStream(file.toPath())
+                } else {
+                    this::class.java.getResourceAsStream(trimmedPath) ?: throw FileNotFoundException(trimmedPath)
+                }
+            }
+        }
+
         private fun getType(path: String): Type {
-            return if (path.substringAfterLast('.') == "svg") Type.VECTOR else Type.RASTER
+            return if (path.substringAfterLast('.') == "svg") Type.SVG else Type.PNG
         }
     }
 }

@@ -3,9 +3,9 @@
 package com.github.stivais.aurora.dsl
 
 import com.github.stivais.aurora.AuroraUI
-import com.github.stivais.aurora.elements.Element
-import com.github.stivais.aurora.elements.ElementScope
-import com.github.stivais.aurora.elements.impl.Group
+import com.github.stivais.aurora.components.Component
+import com.github.stivais.aurora.components.scope.ComponentScope
+import com.github.stivais.aurora.components.impl.Group
 import com.github.stivais.aurora.events.AuroraEvent
 import com.github.stivais.aurora.renderer.Renderer
 import com.github.stivais.aurora.renderer.data.Radii
@@ -15,11 +15,11 @@ import com.github.stivais.aurora.transforms.impl.Scale
 
 /**
  * Function that creates an instance of [AuroraUI],
- * and automatically creates an [ElementScope] starting from the root element
+ * and automatically creates an [ComponentScope] starting from the root element
  */
-fun Aurora(renderer: Renderer, block: ElementScope<Group>.() -> Unit): AuroraUI {
+fun Aurora(renderer: Renderer, block: ComponentScope<Group>.() -> Unit): AuroraUI {
     val ui = AuroraUI(renderer)
-    ElementScope(ui.main).block()
+    ComponentScope(ui.main).block()
     return ui
 }
 
@@ -51,7 +51,7 @@ fun radius(tl: Number = 0f, bl: Number = 0f, br: Number = 0f, tr: Number = 0f) =
 /**
  * Creates a [Scale] transform and adds it to the element
  */
-fun ElementScope<*>.scale(amount: Float): Scale {
+fun ComponentScope<*>.scale(amount: Float): Scale {
     val scale = Scale(amount)
     transform(scale)
     return scale
@@ -60,7 +60,7 @@ fun ElementScope<*>.scale(amount: Float): Scale {
 /**
  * Creates a [Scale.Animated] transform and adds it to the element
  */
-fun ElementScope<*>.scale(from: Float, to: Float): Scale.Animated {
+fun ComponentScope<*>.scale(from: Float, to: Float): Scale.Animated {
     val scale = Scale.Animated(from, to)
     transform(scale)
     return scale
@@ -69,7 +69,7 @@ fun ElementScope<*>.scale(from: Float, to: Float): Scale.Animated {
 /**
  * Creates a [Rotation] transform and adds it to the element
  */
-fun ElementScope<*>.rotation(amount: Float): Rotation {
+fun ComponentScope<*>.rotation(amount: Float): Rotation {
     val rotation = Rotation(amount)
     transform(rotation)
     return rotation
@@ -78,7 +78,7 @@ fun ElementScope<*>.rotation(amount: Float): Rotation {
 /**
  * Creates a [Rotation.Animated] transform and adds it to the element
  */
-fun ElementScope<*>.rotation(from: Float, to: Float): Rotation.Animated {
+fun ComponentScope<*>.rotation(from: Float, to: Float): Rotation.Animated {
     val rotation = Rotation.Animated(from, to)
     transform(rotation)
     return rotation
@@ -87,7 +87,7 @@ fun ElementScope<*>.rotation(from: Float, to: Float): Rotation.Animated {
 /**
  * Creates a [Alpha] transform and adds it to the element
  */
-fun ElementScope<*>.alpha(amount: Float): Alpha {
+fun ComponentScope<*>.alpha(amount: Float): Alpha {
     val alpha = Alpha(amount)
     transform(alpha)
     return alpha
@@ -96,7 +96,7 @@ fun ElementScope<*>.alpha(amount: Float): Alpha {
 /**
  * Creates a [Alpha.Animated] transform and adds it to the element
  */
-fun ElementScope<*>.alpha(from: Float, to: Float): Alpha.Animated {
+fun ComponentScope<*>.alpha(from: Float, to: Float): Alpha.Animated {
     val alpha = Alpha.Animated(from, to)
     transform(alpha)
     return alpha
@@ -105,7 +105,7 @@ fun ElementScope<*>.alpha(from: Float, to: Float): Alpha.Animated {
 /**
  * Moves the element to the top inside of it's parent
  */
-fun Element.moveToTop() {
+fun Component.moveToTop() {
     val it = this
     this.parent!!.children!!.apply {
         remove(it)
@@ -118,21 +118,21 @@ fun Element.moveToTop() {
  *
  * Note: Shouldn't be used with any input related events (like Mouse click events).
  */
-fun ElementScope<*>.passEvent(event: AuroraEvent, to: ElementScope<*>) {
-    ui.eventManager.postToAll(event, to.element)
+fun ComponentScope<*>.passEvent(event: AuroraEvent, to: ComponentScope<*>) {
+    ui.eventManager.postToAll(event, to.component)
 }
 
 /**
  * Toggles this element's enabled value.
  */
-fun <E : Element> ElementScope<E>.toggle(): ElementScope<E> {
-    element.enabled = !element.enabled
+fun <E : Component> ComponentScope<E>.toggle(): ComponentScope<E> {
+    component.enabled = !component.enabled
     return this
 }
 
 /**
  * Returns a boolean based on if this element is focused in the [EventManager][com.github.stivais.aurora.events.EventManager]
  */
-fun ElementScope<*>.focused(): Boolean {
-    return ui.eventManager.focused == this.element
+fun ComponentScope<*>.focused(): Boolean {
+    return ui.eventManager.focused == this.component
 }

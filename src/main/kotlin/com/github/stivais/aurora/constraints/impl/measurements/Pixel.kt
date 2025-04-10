@@ -1,7 +1,7 @@
 package com.github.stivais.aurora.constraints.impl.measurements
 
 import com.github.stivais.aurora.constraints.Constraint
-import com.github.stivais.aurora.elements.Element
+import com.github.stivais.aurora.components.Component
 
 /**
  * # Pixel
@@ -10,7 +10,7 @@ import com.github.stivais.aurora.elements.Element
  */
 class Pixel(var pixels: Float) : Constraint.Measurement {
 
-    override fun calculate(element: Element, type: Int): Float {
+    override fun calculate(element: Component, type: Int): Float {
         return pixels
     }
 

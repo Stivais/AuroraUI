@@ -1,6 +1,6 @@
 package com.github.stivais.aurora.transforms.impl
 
-import com.github.stivais.aurora.elements.Element
+import com.github.stivais.aurora.components.Component
 import com.github.stivais.aurora.renderer.Renderer
 import com.github.stivais.aurora.transforms.Transform
 
@@ -18,7 +18,7 @@ class Scale(
     private val centered: Boolean = true
 ) : Transform.Mutable {
 
-    override fun apply(element: Element, renderer: Renderer) {
+    override fun apply(element: Component, renderer: Renderer) {
         scale(element, renderer, amount, amount, centered)
     }
 
@@ -34,7 +34,7 @@ class Scale(
         to: Float,
         private val centered: Boolean = true
     ) : Transform.Animated(from, to) {
-        override fun apply(element: Element, renderer: Renderer) {
+        override fun apply(element: Component, renderer: Renderer) {
             val amount = get()
             scale(element, renderer, amount, amount, centered)
         }
@@ -42,7 +42,7 @@ class Scale(
 }
 
 // utility fun
-private fun scale(element: Element, renderer: Renderer, amountX: Float, amountY: Float, centered: Boolean) {
+private fun scale(element: Component, renderer: Renderer, amountX: Float, amountY: Float, centered: Boolean) {
     var x = element.x
     var y = element.y
     if (centered) {

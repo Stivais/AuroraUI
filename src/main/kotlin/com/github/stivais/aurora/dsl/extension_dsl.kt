@@ -5,9 +5,9 @@ package com.github.stivais.aurora.dsl
 import com.github.stivais.aurora.animations.Animation
 import com.github.stivais.aurora.color.Color
 import com.github.stivais.aurora.constraints.impl.measurements.Pixel
-import com.github.stivais.aurora.elements.Element
-import com.github.stivais.aurora.elements.ElementScope
-import com.github.stivais.aurora.elements.impl.Block
+import com.github.stivais.aurora.components.Component
+import com.github.stivais.aurora.components.scope.ComponentScope
+import com.github.stivais.aurora.components.impl.Block
 import com.github.stivais.aurora.utils.color
 import com.github.stivais.aurora.utils.multiply
 
@@ -20,7 +20,7 @@ import com.github.stivais.aurora.utils.multiply
  *
  * @param block Function to get ran.
  */
-inline fun ElementScope<*>.onDrag(button: Int = 0, crossinline block: () -> Boolean) {
+inline fun ComponentScope<*>.onDrag(button: Int = 0, crossinline block: () -> Boolean) {
     var pressed = false
     onClick(button) {
         pressed = true
@@ -41,11 +41,11 @@ inline fun ElementScope<*>.onDrag(button: Int = 0, crossinline block: () -> Bool
  *
  * @param block Function to get ran. Parameters represent percentage-based position of the mouse when dragged.
  */
-inline fun ElementScope<*>.onMouseDrag(crossinline block: (x: Float, y: Float) -> Boolean) {
+inline fun ComponentScope<*>.onMouseDrag(crossinline block: (x: Float, y: Float) -> Boolean) {
     onDrag {
         block(
-            ((ui.mx - element.x) / element.width).coerceIn(0f, 1f),
-            ((ui.my - element.y) / element.height).coerceIn(0f, 1f),
+            ((ui.mx - component.x) / component.width).coerceIn(0f, 1f),
+            ((ui.my - component.y) / component.height).coerceIn(0f, 1f),
         )
     }
 }
@@ -60,9 +60,9 @@ inline fun ElementScope<*>.onMouseDrag(crossinline block: (x: Float, y: Float) -
  *
  * It also brings the element to the top when dragged.
  */
-fun ElementScope<*>.draggable(
+fun ComponentScope<*>.draggable(
     button: Int = 0,
-    moves: Element = element,
+    moves: Component = component,
     coerce: Boolean = true,
 ) {
     var initialized = false
@@ -105,13 +105,13 @@ fun ElementScope<*>.draggable(
  * It will mutate the color to a [Color.Animated],
  * where first color is the original color, and the second is a darker version.
  */
-fun ElementScope<Block>.hoverEffect(
+fun ComponentScope<Block>.hoverEffect(
     factor: Float,
     duration: Float = 0.2.seconds,
     style: Animation.Style = Animation.Style.Linear
 ) {
-    val before = element.color!!
+    val before = component.color!!
     val hover = Color.Animated(from = before, to = color { before.rgba.multiply(factor = factor) })
-    element.color = hover
+    component.color = hover
     onMouseEnterExit { hover.animate(duration, style) }
 }

@@ -1,7 +1,7 @@
 package com.github.stivais.aurora.constraints.impl.measurements
 
 import com.github.stivais.aurora.constraints.Constraint
-import com.github.stivais.aurora.elements.Element
+import com.github.stivais.aurora.components.Component
 
 /**
  * # Percent
@@ -10,7 +10,7 @@ import com.github.stivais.aurora.elements.Element
  */
 class Percent(private var amount: Float) : Constraint.Measurement {
 
-    override fun calculate(element: Element, type: Int): Float {
+    override fun calculate(element: Component, type: Int): Float {
         val size = element.parent?.getSize(type % 2 == 0) ?: return 0f
         return size * amount
     }

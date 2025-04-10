@@ -1,7 +1,7 @@
 package com.github.stivais.aurora.constraints.impl.size
 
 import com.github.stivais.aurora.constraints.Constraint
-import com.github.stivais.aurora.elements.Element
+import com.github.stivais.aurora.components.Component
 
 /**
  * # Copying
@@ -10,7 +10,7 @@ import com.github.stivais.aurora.elements.Element
  */
 object Copying : Constraint.Size {
 
-    override fun calculateSize(element: Element, horizontal: Boolean): Float {
+    override fun calculateSize(element: Component, horizontal: Boolean): Float {
         return (element.parent?.getSize(horizontal) ?: 0f)
     }
 

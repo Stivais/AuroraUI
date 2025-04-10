@@ -1,7 +1,7 @@
 package com.github.stivais.aurora.constraints.impl.size
 
 import com.github.stivais.aurora.constraints.Constraint
-import com.github.stivais.aurora.elements.Element
+import com.github.stivais.aurora.components.Component
 import com.github.stivais.aurora.utils.loop
 
 /**
@@ -13,7 +13,7 @@ import com.github.stivais.aurora.utils.loop
  */
 object Bounding : Constraint.Size {
 
-    override fun calculateSize(element: Element, horizontal: Boolean): Float {
+    override fun calculateSize(element: Component, horizontal: Boolean): Float {
         val children = element.children ?: return 0f
 
         var value = 0f

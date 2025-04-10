@@ -1,7 +1,7 @@
 package com.github.stivais.aurora.transforms
 
 import com.github.stivais.aurora.animations.Animation
-import com.github.stivais.aurora.elements.Element
+import com.github.stivais.aurora.components.Component
 import com.github.stivais.aurora.renderer.Renderer
 import kotlin.reflect.KProperty
 
@@ -21,7 +21,7 @@ import kotlin.reflect.KProperty
  */
 fun interface Transform {
 
-    fun apply(element: Element, renderer: Renderer)
+    fun apply(element: Component, renderer: Renderer)
 
     /**
      * Helps implement delegation for transformations that use 1 main value
@@ -33,11 +33,11 @@ fun interface Transform {
          */
         var amount: Float
 
-        operator fun getValue(thisRef: Element, property: KProperty<*>): Float {
+        operator fun getValue(thisRef: Component, property: KProperty<*>): Float {
             return amount
         }
 
-        operator fun setValue(thisRef: Element, property: KProperty<*>, value: Float) {
+        operator fun setValue(thisRef: Component, property: KProperty<*>, value: Float) {
             amount = value
         }
     }

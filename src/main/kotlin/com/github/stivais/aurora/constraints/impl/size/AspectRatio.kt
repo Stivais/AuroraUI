@@ -1,7 +1,7 @@
 package com.github.stivais.aurora.constraints.impl.size
 
 import com.github.stivais.aurora.constraints.Constraint
-import com.github.stivais.aurora.elements.Element
+import com.github.stivais.aurora.components.Component
 
 /**
  * # AspectRatio
@@ -12,7 +12,7 @@ class AspectRatio(
     private var ratio: Float
 ) : Constraint.Size {
 
-    override fun calculateSize(element: Element, horizontal: Boolean): Float {
+    override fun calculateSize(element: Component, horizontal: Boolean): Float {
         var size = element.getSize(!horizontal)
         size = if (horizontal) size * ratio else size / ratio
         return size

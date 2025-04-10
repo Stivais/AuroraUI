@@ -1,7 +1,7 @@
 package com.github.stivais.aurora.constraints.impl.positions
 
 import com.github.stivais.aurora.constraints.Constraint
-import com.github.stivais.aurora.elements.Element
+import com.github.stivais.aurora.components.Component
 
 /**
  * # Center
@@ -12,7 +12,7 @@ import com.github.stivais.aurora.elements.Element
  */
 object Center : Constraint.Position {
 
-    override fun calculatePos(element: Element, horizontal: Boolean): Float {
+    override fun calculatePos(element: Component, horizontal: Boolean): Float {
         val parentSize = element.parent?.getSize(horizontal) ?: 0f
         if (parentSize == 0f) return 0f
         return parentSize / 2f - element.getSize(horizontal) / 2f

@@ -1,6 +1,6 @@
 package com.github.stivais.aurora.transforms.impl
 
-import com.github.stivais.aurora.elements.Element
+import com.github.stivais.aurora.components.Component
 import com.github.stivais.aurora.renderer.Renderer
 import com.github.stivais.aurora.transforms.Transform
 
@@ -13,7 +13,7 @@ import com.github.stivais.aurora.transforms.Transform
  */
 class Rotation(override var amount: Float) : Transform.Mutable {
 
-    override fun apply(element: Element, renderer: Renderer) {
+    override fun apply(element: Component, renderer: Renderer) {
         rotate(element, renderer, amount)
     }
 
@@ -26,13 +26,13 @@ class Rotation(override var amount: Float) : Transform.Mutable {
         from: Float,
         to: Float,
     ) : Transform.Animated(from, to) {
-        override fun apply(element: Element, renderer: Renderer) {
+        override fun apply(element: Component, renderer: Renderer) {
             rotate(element, renderer, get())
         }
     }
 }
 
-private fun rotate(element: Element, renderer: Renderer, amount: Float) {
+private fun rotate(element: Component, renderer: Renderer, amount: Float) {
     val x = element.x + element.width / 2f
     val y = element.y + element.height / 2f
     renderer.translate(x, y)

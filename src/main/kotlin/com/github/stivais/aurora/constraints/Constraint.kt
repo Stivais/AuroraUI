@@ -2,7 +2,7 @@ package com.github.stivais.aurora.constraints
 
 import com.github.stivais.aurora.constraints.Constraint.*
 import com.github.stivais.aurora.constraints.impl.measurements.Undefined
-import com.github.stivais.aurora.elements.Element
+import com.github.stivais.aurora.components.Component
 
 /**
  * # Constraint
@@ -18,11 +18,11 @@ sealed interface Constraint {
      *
      * @param type type of position or size. (x: 0, y: 1, width: 2, height: 3)
      */
-    fun calculate(element: Element, type: Int = 0): Float
+    fun calculate(element: Component, type: Int = 0): Float
 
     /**
      * If this constraint uses its children's value in the calculation,
-     * this is to ensure they're positioned/sized correctly in the [positioning pipeline][com.github.stivais.aurora.elements.Element.size].
+     * this is to ensure they're positioned/sized correctly in the [positioning pipeline][com.github.stivais.aurora.components.Component.size].
      */
     fun reliesOnChildren(): Boolean = false
 
@@ -57,9 +57,9 @@ sealed interface Constraint {
          *
          * @param horizontal If this is true x is being positioned else y is being positioned.
          */
-        fun calculatePos(element: Element, horizontal: Boolean): Float
+        fun calculatePos(element: Component, horizontal: Boolean): Float
 
-        override fun calculate(element: Element, type: Int): Float = calculatePos(element, type == 0)
+        override fun calculate(element: Component, type: Int): Float = calculatePos(element, type == 0)
     }
 
     /**
@@ -81,9 +81,9 @@ sealed interface Constraint {
          *
          * @param horizontal If this is true width is being sized else height is being sized.
          */
-        fun calculateSize(element: Element, horizontal: Boolean): Float
+        fun calculateSize(element: Component, horizontal: Boolean): Float
 
-        override fun calculate(element: Element, type: Int): Float = calculateSize(element, type == 2)
+        override fun calculate(element: Component, type: Int): Float = calculateSize(element, type == 2)
     }
 
     /**
@@ -102,14 +102,14 @@ sealed interface Constraint {
      */
     interface Measurement : Position, Size {
 
-        override fun calculatePos(element: Element, horizontal: Boolean): Float {
+        override fun calculatePos(element: Component, horizontal: Boolean): Float {
             return calculate(element, if (horizontal) 0 else 1)
         }
 
-        override fun calculateSize(element: Element, horizontal: Boolean): Float {
+        override fun calculateSize(element: Component, horizontal: Boolean): Float {
             return calculate(element, if (horizontal) 2 else 3)
         }
 
-        override fun calculate(element: Element, type: Int): Float
+        override fun calculate(element: Component, type: Int): Float
     }
 }

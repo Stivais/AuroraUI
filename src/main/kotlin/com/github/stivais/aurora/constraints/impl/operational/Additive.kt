@@ -1,7 +1,7 @@
 package com.github.stivais.aurora.constraints.impl.operational
 
 import com.github.stivais.aurora.constraints.Constraint
-import com.github.stivais.aurora.elements.Element
+import com.github.stivais.aurora.components.Component
 
 /**
  * # Additive
@@ -13,7 +13,7 @@ class Additive(
     private val second: Constraint
 ) : Constraint.Measurement {
 
-    override fun calculate(element: Element, type: Int): Float {
+    override fun calculate(element: Component, type: Int): Float {
         return first.calculate(element, type) + second.calculate(element, type)
     }
 

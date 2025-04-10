@@ -33,6 +33,8 @@ interface Renderer {
 
     fun globalAlpha(amount: Float)
 
+    fun globalFontBlur(amount: Float)
+
     fun pushScissor(x: Float, y: Float, w: Float, h: Float)
 
     fun popScissor()
@@ -111,7 +113,7 @@ interface Renderer {
         tl: Float, bl: Float, br: Float, tr: Float
     )
 
-    fun text(text: String, x: Float, y: Float, size: Float, color: Int, font: Font)
+    fun text(text: String, x: Float, y: Float, size: Float, color: Int, font: Font, blur: Float)
 
     fun textWidth(text: String, size: Float, font: Font): Float
 

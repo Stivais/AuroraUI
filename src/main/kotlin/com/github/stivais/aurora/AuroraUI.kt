@@ -2,8 +2,8 @@ package com.github.stivais.aurora
 
 import com.github.stivais.aurora.constraints.Constraints
 import com.github.stivais.aurora.dsl.px
-import com.github.stivais.aurora.elements.Element
-import com.github.stivais.aurora.elements.impl.Group
+import com.github.stivais.aurora.components.Component
+import com.github.stivais.aurora.components.impl.Group
 import com.github.stivais.aurora.events.EventManager
 import com.github.stivais.aurora.events.Lifetime
 import com.github.stivais.aurora.operations.Operation
@@ -19,14 +19,14 @@ import com.github.stivais.aurora.utils.loopRemoveIf
  *
  * ## Elements
  *
- * AuroraUI is built around **[Elements][Element]**, they are hierarchical components, which render to the screen.
+ * AuroraUI is built around **[Elements][Component]**, they are hierarchical components, which render to the screen.
  *
  * They are positioned and sized by **[Constraints][com.github.stivais.aurora.constraints.Constraint]**,
  * they define the x, y, width and height of an element.
  *
- * Elements can also be positioned by **[Layouts][com.github.stivais.aurora.elements.Layout]**.
- * They're a type of element, such as [Column][com.github.stivais.aurora.elements.impl.layout.Column],
- * or [Row][com.github.stivais.aurora.elements.impl.layout.Row], which position its elements.
+ * Elements can also be positioned by **[Layouts][com.github.stivais.aurora.components.Layout]**.
+ * They're a type of element, such as [Column][com.github.stivais.aurora.components.impl.layout.Column],
+ * or [Row][com.github.stivais.aurora.components.impl.layout.Row], which position its elements.
  *
  * ## Events
  *
@@ -152,7 +152,7 @@ class AuroraUI(val renderer: Renderer) {
         operations.add(operation)
     }
 
-    fun focus(element: Element) {
+    fun focus(element: Component) {
         eventManager.focused = element
     }
 

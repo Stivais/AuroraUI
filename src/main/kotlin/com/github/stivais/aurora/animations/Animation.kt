@@ -13,7 +13,7 @@ import kotlin.math.pow
  * @param style Style of the animations
  */
 class Animation(
-    private var duration: Float,
+    var duration: Float,
     private var style: Style
 ) {
     private var time: Long = System.nanoTime()
@@ -25,7 +25,7 @@ class Animation(
      */
     var finished: Boolean = false
 
-    private var onFinish: (() -> Unit)? = null
+    var onFinish: (() -> Unit)? = null
 
     fun get(): Float {
         val percent = ((System.nanoTime() - time) / duration)
@@ -48,9 +48,15 @@ class Animation(
      * Restart this animation, allowing it to be reused, if it wasn't previously finished.
      */
     fun restart(duration: Float, style: Style) {
+        this.onFinish?.invoke()
         this.duration = duration
         this.style = style
         this.time = System.nanoTime()
+    }
+
+    // idk how well this works
+    fun skip(amount: Float) {
+        this.time -= amount.toLong()
     }
 
     /**

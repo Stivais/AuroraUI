@@ -84,6 +84,16 @@ inline fun Color.withAlpha(alpha: Int): Color = Color.RGB(red, green, blue, alph
 inline fun Color.multiplyAlpha(factor: Float): Color = withAlpha((alpha * factor).roundToInt())
 
 /**
+ * Copies a packed color with the new alpha value provided.
+ */
+inline fun Int.withAlpha(alpha: Int) = (this and 0x00FFFFFF) or ((alpha shl 24) and 0xFF000000.toInt())
+
+/**
+ * Copies a packed color with the new alpha value provided.
+ */
+inline fun Int.withAlpha(alpha: Float) = withAlpha((alpha * 255).roundToInt())
+
+/**
  * Multiples an integer representing a hexadecimal color.
  */
 inline fun Int.multiply(

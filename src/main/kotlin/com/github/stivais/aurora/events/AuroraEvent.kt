@@ -18,7 +18,7 @@ interface AuroraEvent {
      * This is an extension for [AuroraEvent],
      * which indicates that only the type of event needs to match when being posted.
      *
-     * @see com.github.stivais.aurora.elements.Element.registerEvent
+     * @see com.github.stivais.aurora.components.Component.registerEvent
      */
     interface NonSpecific : AuroraEvent
 }
@@ -69,14 +69,14 @@ sealed interface Mouse : AuroraEvent {
     /**
      * Gets posted when the mouse enters the element.
      *
-     * @see com.github.stivais.aurora.elements.Element.hovered
+     * @see com.github.stivais.aurora.components.Component.hovered
      */
     data object Entered : Mouse
 
     /**
      * Gets posted when the mouse enters the element.
      *
-     * @see com.github.stivais.aurora.elements.Element.hovered
+     * @see com.github.stivais.aurora.components.Component.hovered
      */
     data object Exited : Mouse
 }
@@ -93,7 +93,7 @@ sealed interface Lifetime : AuroraEvent.NonSpecific {
     /**
      * Gets posted when element is initialized.
      *
-     * @see com.github.stivais.aurora.elements.Element.initialize
+     * @see com.github.stivais.aurora.components.Component.initialize
      */
     data object Initialized : Lifetime
 

@@ -9,7 +9,7 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/aurora" />
+            <option value="$PROJECT_DIR$/glfw-impl" />
           </set>
         </option>
       </GradleProjectSettings>

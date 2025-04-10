@@ -1,6 +1,6 @@
 package com.github.stivais.aurora.transforms.impl
 
-import com.github.stivais.aurora.elements.Element
+import com.github.stivais.aurora.components.Component
 import com.github.stivais.aurora.renderer.Renderer
 import com.github.stivais.aurora.transforms.Transform
 
@@ -12,7 +12,7 @@ import com.github.stivais.aurora.transforms.Transform
  * This class can be delegated to a float because of [Transform.Mutable].
  */
 class Alpha(override var amount: Float) : Transform.Mutable {
-    override fun apply(element: Element, renderer: Renderer) {
+    override fun apply(element: Component, renderer: Renderer) {
         renderer.globalAlpha(amount)
     }
 
@@ -25,7 +25,7 @@ class Alpha(override var amount: Float) : Transform.Mutable {
         from: Float,
         to: Float,
     ) : Transform.Animated(from, to) {
-        override fun apply(element: Element, renderer: Renderer) {
+        override fun apply(element: Component, renderer: Renderer) {
             renderer.globalAlpha(get())
         }
     }
